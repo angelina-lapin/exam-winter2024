@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+    "bootstrap": "^5.3.3",
+    "sass": "^1.81.0"
+  },
+  "scripts": {
+    "build-css": "sass --load-path=node_modules styles.scss styles.css",
+    "watch-css": "sass --watch styles.scss styles.css"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3"
+  },
+  
+  "prettier": {
+  "semi": true,
+  "singleQuote": true,
+  "tabWidth": 2,
+  "trailingComma": "es5"
+}
+
+}
