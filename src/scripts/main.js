@@ -10,6 +10,12 @@ async function loadPage(page) {
   const res = await fetch(routes[page]);
   const content = await res.text();
   app.innerHTML = content;
+
+  if (page === 'home') {
+    import('./home.js').then((module) => module.renderItems());
+  }
 }
 
-loadPage('home');
+document.addEventListener('DOMContentLoaded', () => {
+  loadPage('home');
+});
