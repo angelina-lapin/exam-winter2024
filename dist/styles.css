@@ -11922,4 +11922,25 @@ body {
   font-weight: bold;
 }
 
+form {
+  background-color: #f8f9fa;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+form .btn {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+form .form-label {
+  font-weight: bold;
+}
+
+form input {
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
 /*# sourceMappingURL=styles.css.map */
