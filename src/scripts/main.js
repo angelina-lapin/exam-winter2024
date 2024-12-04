@@ -1,3 +1,5 @@
+import { renderItems, setupSearch, setupCardLinks } from './home.js';
+
 const app = document.getElementById('app');
 
 const routes = {
@@ -7,12 +9,12 @@ const routes = {
   profile: '/src/pages/profile.html',
 };
 
-function isAuthenticated() {
+export function isAuthenticated() {
   const token = localStorage.getItem('token');
   return !!token;
 }
 
-function updateNavigation() {
+export function updateNavigation() {
   const nav = document.querySelector('.navbar-nav');
   nav.innerHTML = '';
 
@@ -47,14 +49,21 @@ function updateNavigation() {
 }
 
 async function loadPage(page) {
+  if (!app) {
+    console.warn('App container not found. Skipping loadPage logic.');
+    return;
+  }
+
   const res = await fetch(routes[page]);
   const content = await res.text();
+
   app.innerHTML = content;
 
   if (page === 'home') {
-    const { renderItems, setupSearch } = await import('./home.js');
+    console.log('Home page loaded, setting up search...');
     renderItems();
     setupSearch();
+    setupCardLinks();
   }
 }
 
