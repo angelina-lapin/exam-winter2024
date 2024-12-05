@@ -5,7 +5,11 @@ export default defineConfig({
   build: {
     outDir: './dist',
     rollupOptions: {
-      input: './index.html',
+      input: {
+        main: 'src/index.html',
+        profile: 'src/pages/profile.html',
+        product: 'src/pages/product.html',
+      },
     },
   },
   css: {

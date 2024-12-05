@@ -1,4 +1,4 @@
-import { API_AUCTION_LISTINGS } from '../js/constants.js';
+import { API_AUCTION_LISTINGS, API_BASE } from '../js/constants.js';
 import { headers } from '../js/headers.js';
 
 export async function fetchAuctions() {
@@ -83,6 +83,106 @@ export async function fetchBids(listingId) {
     return await response.json();
   } catch (error) {
     console.error('Error fetching bids:', error);
+    throw error;
+  }
+}
+
+export async function fetchUserProfile(name) {
+  try {
+    const response = await fetch(`${API_BASE}/auction/profiles/${name}`, {
+      headers: headers(),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch user profile');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    return null;
+  }
+}
+
+export async function updateUserProfile(profileUpdates) {
+  const user = JSON.parse(localStorage.getItem('user'));
+  if (!user || !user.data?.name) {
+    console.error('User not logged in or missing profile name');
+    return;
+  }
+  const profileName = [user.data.name];
+
+  try {
+    const response = await fetch(
+      `${API_BASE}/auction/profiles/${profileName}`,
+      {
+        method: 'PUT',
+        headers: headers(),
+        body: JSON.stringify(profileUpdates),
+      }
+    );
+    if (!response.ok) {
+      throw new Error('Failed to update user profile');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error updating user profile:', error);
+    throw error;
+  }
+}
+
+export async function createListing(data) {
+  try {
+    const response = await fetch(API_AUCTION_LISTINGS, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || 'Failed to create listing');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error creating listing:', error);
+    throw error;
+  }
+}
+
+export async function fetchUserListings(userName) {
+  try {
+    const response = await fetch(
+      `${API_BASE}/auction/profiles/${userName}/listings`,
+      {
+        headers: headers(),
+      }
+    );
+
+    if (!response.ok) throw new Error('Failed to fetch user listings');
+
+    const data = await response.json();
+    return data.data || [];
+  } catch (error) {
+    console.error('Error fetching user listings:', error);
+    return [];
+  }
+}
+
+export async function deleteListing(listingId) {
+  try {
+    const response = await fetch(`${API_AUCTION_LISTINGS}/${listingId}`, {
+      method: 'DELETE',
+      headers: headers(),
+    });
+
+    if (response.status !== 204) {
+      const errorText = await response.text();
+      throw new Error(errorText || 'Failed to delete listing');
+    }
+
+    console.log(`Listing ${listingId} deleted successfully.`);
+  } catch (error) {
+    console.error('Error deleting listing:', error);
     throw error;
   }
 }
