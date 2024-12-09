@@ -1,15 +1,25 @@
 import { API_AUCTION_LISTINGS, API_BASE } from '../js/constants.js';
 import { headers } from '../js/headers.js';
 
-export async function fetchAuctions() {
+export async function fetchAuctions(page = 1, limit = 50) {
   try {
-    console.log(`Fetching from: ${API_AUCTION_LISTINGS}`);
-    const response = await fetch(API_AUCTION_LISTINGS);
-    if (!response.ok) throw new Error('Failed to fetch listings');
-    return await response.json();
+    const response = await fetch(
+      `${API_AUCTION_LISTINGS}?_sort=createdAt&_order=desc&_page=${page}&_limit=${limit}`
+    );
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch listings');
+    }
+
+    const data = await response.json();
+
+    const items = Array.isArray(data.data) ? data.data : [];
+    const totalCount = parseInt(response.headers.get('X-Total-Count'), 10) || 0;
+
+    return { items, totalCount };
   } catch (error) {
     console.error('Error during fetchAuctions:', error);
-    return [];
+    return { items: [], totalCount: 0 };
   }
 }
 

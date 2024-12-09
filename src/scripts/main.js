@@ -1,4 +1,5 @@
 import { renderItems, setupSearch, setupCardLinks } from './home.js';
+import { fetchAuctions, fetchUserListings } from './api.js';
 
 const app = document.getElementById('app');
 
@@ -56,52 +57,88 @@ async function loadPage(page) {
 
   const res = await fetch(routes[page]);
   const content = await res.text();
-
   app.innerHTML = content;
 
   if (page === 'home') {
     console.log('Home page loaded, setting up search...');
-    renderItems();
-    setupSearch();
-    setupCardLinks();
+    let allListings = [];
+
+    try {
+      const { items } = await fetchAuctions();
+      console.log('General Listings:', items);
+
+      allListings = [...items];
+
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (user && user.data.name) {
+        try {
+          const userListings = await fetchUserListings(user.data.name);
+          console.log('User Listings:', userListings);
+
+          const uniqueUserListings = userListings.filter(
+            (userListing) =>
+              !items.some(
+                (generalListing) => generalListing.id === userListing.id
+              )
+          );
+
+          allListings = [...allListings, ...uniqueUserListings];
+        } catch (userListingsError) {
+          console.error('Error fetching user listings:', userListingsError);
+        }
+      }
+
+      renderItems(allListings);
+      updateHomePage();
+      setupSearch();
+
+      setupCardLinks();
+    } catch (error) {
+      console.error('Error fetching listings:', error);
+    }
   }
 }
 
 function updateHomePage() {
   const welcomeSection = document.querySelector('.welcome-section');
 
-  if (!welcomeSection) return;
+  if (!welcomeSection) {
+    console.error('Welcome section not found in DOM');
+    return;
+  }
 
   if (isAuthenticated()) {
     const user = JSON.parse(localStorage.getItem('user'));
     const userName = user?.data?.name || 'User';
 
     welcomeSection.innerHTML = `
-      <div class="container text-center text-white">
+      <div class="container">
         <h1>Welcome to AuctionPlace, ${userName}!</h1>
         <p>Start bidding on items or put up your own for auction.</p>
         <div class="search-bar d-flex justify-content-center mt-4">
           <input
+            id="search-input"
             type="text"
             class="form-control w-50 me-2"
             placeholder="Search for items"
           />
-          <button class="btn btn-outline-dark">Search</button>
+          <button id="search-button" class="btn btn-outline-dark">Search</button>
         </div>
       </div>
     `;
   } else {
     welcomeSection.innerHTML = `
-      <div class="container text-center text-white">
+      <div class="container">
         <h1>Welcome to AuctionPlace!</h1>
         <p>Start bidding on items or put up your own for auction.</p>
         <div class="search-bar d-flex justify-content-center mt-4">
           <input
+            id="search-input"
             type="text"
             class="form-control w-50 me-2"
             placeholder="Search for items"
           />
-          <button class="btn btn-outline-dark">Search</button>
+          <button id="search-button" class="btn btn-outline-dark">Search</button>
         </div>
         <button class="btn btn-dark mt-4">Register now and get 1000 credits</button>
       </div>
@@ -112,5 +149,4 @@ function updateHomePage() {
 document.addEventListener('DOMContentLoaded', async () => {
   await loadPage('home');
   updateNavigation();
-  updateHomePage();
 });

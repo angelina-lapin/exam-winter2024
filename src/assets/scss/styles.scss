@@ -18,9 +18,17 @@ body {
   color: #ffffff !important;
 }
 
+
+
 .welcome-section {
+  z-index: 1;
+  position: relative;
+  background-color: #627971; 
+  color: white; 
+  padding: 20px 0; 
   text-align: center;
 }
+
 
 .search-bar input {
   border-radius: 4px;
@@ -104,3 +112,5 @@ form input {
   border-radius: 4px;
   font-size: 1rem;
 }
+
+

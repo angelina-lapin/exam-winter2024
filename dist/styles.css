@@ -11861,6 +11861,11 @@ body {
 }
 
 .welcome-section {
+  z-index: 1;
+  position: relative;
+  background-color: #627971;
+  color: white;
+  padding: 20px 0;
   text-align: center;
 }
 
