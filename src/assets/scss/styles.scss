@@ -19,17 +19,6 @@ body {
 }
 
 
-
-.welcome-section {
-  z-index: 1;
-  position: relative;
-  background-color: #627971; 
-  color: white; 
-  padding: 20px 0; 
-  text-align: center;
-}
-
-
 .search-bar input {
   border-radius: 4px;
 }
@@ -113,4 +102,15 @@ form input {
   font-size: 1rem;
 }
 
+
+.welcome-section {
+  background-color: #627971;
+  color: white; 
+  padding: 20px 0; 
+}
+
+.container {
+  max-width: 100%; 
+  margin: 0 auto;
+}
 

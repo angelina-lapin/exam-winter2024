@@ -1,5 +1,10 @@
-import { renderItems, setupSearch, setupCardLinks } from './home.js';
-import { fetchAuctions, fetchUserListings } from './api.js';
+import {
+  renderItems,
+  setupSearch,
+  setupCardLinks,
+  updateWelcomeSection,
+} from './home.js';
+import { fetchAuctions } from './api.js';
 
 const app = document.getElementById('app');
 
@@ -49,9 +54,16 @@ export function updateNavigation() {
   }
 }
 
+function createContainer(parent) {
+  const container = document.createElement('div');
+  container.classList.add('container');
+  parent.appendChild(container);
+  return container;
+}
+
 async function loadPage(page) {
   if (!app) {
-    console.warn('App container not found. Skipping loadPage logic.');
+    console.warn('App container not found.');
     return;
   }
 
@@ -60,89 +72,57 @@ async function loadPage(page) {
   app.innerHTML = content;
 
   if (page === 'home') {
-    console.log('Home page loaded, setting up search...');
-    let allListings = [];
+    console.log('Home page loaded...');
+
+    let welcomeSection = document.querySelector('.welcome-section');
+    if (!welcomeSection) {
+      console.warn(
+        'Welcome section not found in fetched content. Adding default structure...'
+      );
+      const container = app.querySelector('.container') || createContainer(app);
+      container.insertAdjacentHTML(
+        'afterbegin',
+        `<div class="welcome-section mb-4"></div>`
+      );
+      welcomeSection = container.querySelector('.welcome-section');
+    }
+
+    updateWelcomeSection(welcomeSection);
+
+    let itemsGrid = document.querySelector('#items-grid');
+    let pagination = document.querySelector('#pagination');
+
+    if (!itemsGrid || !pagination) {
+      // console.warn(
+      //   'Items grid or pagination not found. Adding default HTML structure...'
+      // );
+      const container = app.querySelector('.container') || createContainer(app);
+
+      if (!itemsGrid) {
+        container.insertAdjacentHTML(
+          'beforeend',
+          `<div id="items-grid" class="row"></div>`
+        );
+      }
+      if (!pagination) {
+        container.insertAdjacentHTML(
+          'beforeend',
+          `<div id="pagination" class="d-flex justify-content-center mt-4"></div>`
+        );
+      }
+
+      itemsGrid = document.querySelector('#items-grid');
+      pagination = document.querySelector('#pagination');
+    }
 
     try {
       const { items } = await fetchAuctions();
-      console.log('General Listings:', items);
-
-      allListings = [...items];
-
-      const user = JSON.parse(localStorage.getItem('user'));
-      if (user && user.data.name) {
-        try {
-          const userListings = await fetchUserListings(user.data.name);
-          console.log('User Listings:', userListings);
-
-          const uniqueUserListings = userListings.filter(
-            (userListing) =>
-              !items.some(
-                (generalListing) => generalListing.id === userListing.id
-              )
-          );
-
-          allListings = [...allListings, ...uniqueUserListings];
-        } catch (userListingsError) {
-          console.error('Error fetching user listings:', userListingsError);
-        }
-      }
-
-      renderItems(allListings);
-      updateHomePage();
+      await renderItems(items);
       setupSearch();
-
       setupCardLinks();
     } catch (error) {
-      console.error('Error fetching listings:', error);
+      console.error('Error loading home page:', error);
     }
-  }
-}
-
-function updateHomePage() {
-  const welcomeSection = document.querySelector('.welcome-section');
-
-  if (!welcomeSection) {
-    console.error('Welcome section not found in DOM');
-    return;
-  }
-
-  if (isAuthenticated()) {
-    const user = JSON.parse(localStorage.getItem('user'));
-    const userName = user?.data?.name || 'User';
-
-    welcomeSection.innerHTML = `
-      <div class="container">
-        <h1>Welcome to AuctionPlace, ${userName}!</h1>
-        <p>Start bidding on items or put up your own for auction.</p>
-        <div class="search-bar d-flex justify-content-center mt-4">
-          <input
-            id="search-input"
-            type="text"
-            class="form-control w-50 me-2"
-            placeholder="Search for items"
-          />
-          <button id="search-button" class="btn btn-outline-dark">Search</button>
-        </div>
-      </div>
-    `;
-  } else {
-    welcomeSection.innerHTML = `
-      <div class="container">
-        <h1>Welcome to AuctionPlace!</h1>
-        <p>Start bidding on items or put up your own for auction.</p>
-        <div class="search-bar d-flex justify-content-center mt-4">
-          <input
-            id="search-input"
-            type="text"
-            class="form-control w-50 me-2"
-            placeholder="Search for items"
-          />
-          <button id="search-button" class="btn btn-outline-dark">Search</button>
-        </div>
-        <button class="btn btn-dark mt-4">Register now and get 1000 credits</button>
-      </div>
-    `;
   }
 }
 

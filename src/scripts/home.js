@@ -1,26 +1,18 @@
-import { fetchAuctions, searchListings } from './api.js';
+import { searchListings } from './api.js';
 
 export async function renderItems(
   listings = [],
   currentPage = 1,
   itemsPerPage = 50
 ) {
-  const app = document.getElementById('app');
-  if (!app) {
-    console.error('App container not found');
+  const itemsGrid = document.getElementById('items-grid');
+  const paginationContainer = document.getElementById('pagination');
+
+  if (!itemsGrid || !paginationContainer) {
+    console.error('Required containers not found.');
     return;
   }
 
-  app.innerHTML = `
-  <div class="container">
-    <div class="welcome-section mb-4"></div>
-    <div id="items-grid" class="row"></div>
-    <div id="pagination" class="d-flex justify-content-center mt-4"></div>
-  </div>
-`;
-
-  const itemsGrid = document.getElementById('items-grid');
-  const paginationContainer = document.getElementById('pagination');
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedListings = listings.slice(
     startIndex,
@@ -59,6 +51,27 @@ export async function renderItems(
     currentPage,
     listings
   );
+}
+
+export function updateWelcomeSection(welcomeSection) {
+  const user = JSON.parse(localStorage.getItem('user'));
+  const userName = user?.data?.name || 'Guest';
+
+  welcomeSection.innerHTML = `
+    <div class="container-fluid welcome-section text-center text-white bg-dark-green py-5">
+      <h1>Welcome to AuctionPlace, ${userName}!</h1>
+      <p>Start bidding on items or put up your own for auction.</p>
+      <div class="search-bar d-flex justify-content-center mt-4">
+        <input id="search-input" type="text" class="form-control w-50 me-2" placeholder="Search for items">
+        <button id="search-button" class="btn btn-outline-dark">Search</button>
+      </div>
+      ${
+        user
+          ? ''
+          : '<button class="btn btn-dark mt-4">Register now and get 1000 credits</button>'
+      }
+    </div>
+  `;
 }
 
 export function setupCardLinks() {
