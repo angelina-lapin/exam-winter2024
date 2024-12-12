@@ -6,7 +6,7 @@ export default defineConfig({
     outDir: './dist',
     rollupOptions: {
       input: {
-        main: 'src/index.html',
+        main: 'index.html',
         profile: 'src/pages/profile.html',
         product: 'src/pages/product.html',
       },
