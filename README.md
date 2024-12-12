@@ -11,7 +11,6 @@ This is a web application for managing and participating in auctions. Users can 
 - [Folder Structure](#folder-structure)
 - [API Reference](#api-reference)
 - [Contributing](#contributing)
-- [License](#license)
 
 ## Features
 
@@ -155,8 +154,6 @@ For a complete reference, see the [API Documentation](https://docs.noroff.dev/do
 
 ## Contributing
 
-We welcome contributions from students and educators. If you have any additional study materials or practice exams, please submit a pull request.
+I welcome contributions from students and educators. If you have any additional study materials or practice exams, please submit a pull request.
 
-## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
