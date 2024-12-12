@@ -27,7 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       try {
         const userData = await register({ name, email, password });
-        console.log('Registration successful:', userData);
 
         localStorage.setItem(
           'successMessage',
@@ -51,7 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       try {
         const userData = await login({ email, password });
-        console.log('Login successful:', userData);
 
         localStorage.setItem('token', userData.token);
         localStorage.setItem('user', JSON.stringify(userData));

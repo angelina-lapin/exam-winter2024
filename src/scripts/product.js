@@ -18,7 +18,6 @@ export async function renderProductDetails() {
     }
 
     const product = await fetchProductById(productId);
-    console.log('Fetched product:', product);
 
     if (!product || !product.id) {
       console.error('Invalid product data:', product);
@@ -62,8 +61,6 @@ export async function setupBidForm(productId) {
 
     const bids = product.data?.bids || [];
     highestBid = bids.length ? Math.max(...bids.map((bid) => bid.amount)) : 0;
-
-    console.log('Highest current bid:', highestBid);
   } catch (error) {
     console.error('Error fetching product bids:', error);
   }
@@ -144,7 +141,6 @@ export async function renderBids(productId) {
 document.addEventListener('DOMContentLoaded', async () => {
   updateNavigation();
   const productId = new URLSearchParams(window.location.search).get('id');
-  console.log('Product ID from URL:', productId);
   if (productId) {
     await renderProductDetails();
     await setupBidForm(productId);

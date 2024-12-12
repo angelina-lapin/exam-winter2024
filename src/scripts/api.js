@@ -86,8 +86,6 @@ export async function fetchBids(listingId) {
       `${API_AUCTION_LISTINGS}/${listingId}?_bids=true`
     );
     const product = await response.json();
-    console.log('Product with bids:', data);
-    console.log('Bids:', product.data.bids);
 
     if (!response.ok) throw new Error('Failed to fetch bids');
     return await response.json();
@@ -189,8 +187,6 @@ export async function deleteListing(listingId) {
       const errorText = await response.text();
       throw new Error(errorText || 'Failed to delete listing');
     }
-
-    console.log(`Listing ${listingId} deleted successfully.`);
   } catch (error) {
     console.error('Error deleting listing:', error);
     throw error;

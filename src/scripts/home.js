@@ -75,11 +75,9 @@ export function updateWelcomeSection(welcomeSection) {
 }
 
 export function setupCardLinks() {
-  console.log('Setting up card links...');
   const cards = document.querySelectorAll('.card');
 
   if (!cards.length) {
-    console.log('No cards found for setting up links.');
     return;
   }
 
@@ -113,7 +111,6 @@ export function setupPagination(container, totalPages, currentPage, listings) {
 }
 
 export function setupSearch() {
-  console.log('Setting up search...');
   const searchButton = document.getElementById('search-button');
   const searchInput = document.getElementById('search-input');
   const itemsGrid = document.getElementById('items-grid');
@@ -124,7 +121,6 @@ export function setupSearch() {
   }
 
   searchButton.addEventListener('click', async () => {
-    console.log('Search button clicked!');
     const query = searchInput.value.trim();
 
     if (!query) {
@@ -134,7 +130,6 @@ export function setupSearch() {
 
     try {
       const results = await searchListings(query);
-      console.log('Search results:', results);
 
       itemsGrid.innerHTML = '';
 

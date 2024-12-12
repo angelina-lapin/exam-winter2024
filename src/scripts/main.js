@@ -72,8 +72,6 @@ async function loadPage(page) {
   app.innerHTML = content;
 
   if (page === 'home') {
-    console.log('Home page loaded...');
-
     let welcomeSection = document.querySelector('.welcome-section');
     if (!welcomeSection) {
       console.warn(
@@ -93,9 +91,6 @@ async function loadPage(page) {
     let pagination = document.querySelector('#pagination');
 
     if (!itemsGrid || !pagination) {
-      // console.warn(
-      //   'Items grid or pagination not found. Adding default HTML structure...'
-      // );
       const container = app.querySelector('.container') || createContainer(app);
 
       if (!itemsGrid) {

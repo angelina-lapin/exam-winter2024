@@ -9,8 +9,6 @@ export async function register({ name, email, password }) {
       password,
     };
 
-    console.log('Request body:', requestBody);
-
     const response = await fetch(API_AUTH_REGISTER, {
       method: 'POST',
       headers: {
@@ -19,15 +17,8 @@ export async function register({ name, email, password }) {
       body: JSON.stringify(requestBody),
     });
 
-    console.log('Request URL:', API_AUTH_REGISTER);
-    console.log('Request Headers:', { 'Content-Type': 'application/json' });
-    console.log('Request Body (JSON):', JSON.stringify(requestBody));
-    console.log('Response status:', response.status);
-
     if (!response.ok) {
       const errorData = await response.json();
-      console.log('Response not OK:', response);
-      console.log('Response error body:', errorData);
 
       if (errorData.errors && errorData.errors.length > 0) {
         errorData.errors.forEach((err, index) => {
@@ -38,7 +29,6 @@ export async function register({ name, email, password }) {
     }
 
     const data = await response.json();
-    console.log('Response data:', data);
     return data;
   } catch (error) {
     console.error('Error during registration (catch block):', error.message);
