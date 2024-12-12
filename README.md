@@ -103,21 +103,39 @@ This is a web application for managing and participating in auctions. Users can 
   Use the "Delete" button to remove a listing.
 
 ## Folder Structure
+
 ```
+dist/
+├── styles.css
+├── styles.css.map
+node_modules/
 src/
-├── assets/          # Images and static files
+├── assets/
+│   ├── images/
+│   └── scss/
 ├── js/
-│   ├── api.js       # Handles API requests
-│   ├── headers.js   # Manages headers for API requests
-│   ├── constants.js # Contains API base URLs and keys
-│   ├── profile.js   # Profile page logic
-│   ├── product.js   # Product details logic
-│   └── main.js      # Shared utilities and navigation
+│   ├── api/
+│   │   ├── login.js
+│   │   └── register.js
+│   ├── constants.js
+│   └── headers.js
 ├── pages/
-│   ├── index.html   # Homepage
-│   ├── profile.html # Profile page
-│   ├── product.html # Product details page
-└── styles/          # CSS files
+│   ├── home.html
+│   ├── login.html
+│   ├── product.html
+│   ├── profile.html
+│   └── registration.html
+├── scripts/
+│   ├── api.js
+│   ├── forms.js
+│   ├── home.js
+│   ├── main.js
+│   └── profile.js
+├── index.html
+├── package-lock.json
+├── package.json
+├── readme.md
+├── vite.config.js
 ```
 
 
