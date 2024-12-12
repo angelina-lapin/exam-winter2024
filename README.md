@@ -11,7 +11,6 @@ This is a web application for managing and participating in auctions. Users can 
 - [Folder Structure](#folder-structure)
 - [API Reference](#api-reference)
 - [Contributing](#contributing)
-- [License](#license)
 
 ## Features
 
@@ -104,21 +103,39 @@ This is a web application for managing and participating in auctions. Users can 
   Use the "Delete" button to remove a listing.
 
 ## Folder Structure
+
 ```
+dist/
+├── styles.css
+├── styles.css.map
+node_modules/
 src/
-├── assets/          # Images and static files
+├── assets/
+│   ├── images/
+│   └── scss/
 ├── js/
-│   ├── api.js       # Handles API requests
-│   ├── headers.js   # Manages headers for API requests
-│   ├── constants.js # Contains API base URLs and keys
-│   ├── profile.js   # Profile page logic
-│   ├── product.js   # Product details logic
-│   └── main.js      # Shared utilities and navigation
+│   ├── api/
+│   │   ├── login.js
+│   │   └── register.js
+│   ├── constants.js
+│   └── headers.js
 ├── pages/
-│   ├── index.html   # Homepage
-│   ├── profile.html # Profile page
-│   ├── product.html # Product details page
-└── styles/          # CSS files
+│   ├── home.html
+│   ├── login.html
+│   ├── product.html
+│   ├── profile.html
+│   └── registration.html
+├── scripts/
+│   ├── api.js
+│   ├── forms.js
+│   ├── home.js
+│   ├── main.js
+│   └── profile.js
+├── index.html
+├── package-lock.json
+├── package.json
+├── readme.md
+├── vite.config.js
 ```
 
 
@@ -155,8 +172,6 @@ For a complete reference, see the [API Documentation](https://docs.noroff.dev/do
 
 ## Contributing
 
-We welcome contributions from students and educators. If you have any additional study materials or practice exams, please submit a pull request.
+I welcome contributions from students and educators. If you have any additional study materials or practice exams, please submit a pull request.
 
-## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
