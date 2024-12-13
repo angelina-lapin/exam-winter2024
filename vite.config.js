@@ -14,6 +14,14 @@ export default defineConfig({
       },
     },
   },
+  rollupOptions: {
+    external: [
+      '/src/scripts/product.js',
+      '/src/scripts/profile.js',
+      '/src/scripts/forms.js',
+    ],
+  },
+
   css: {
     preprocessorOptions: {
       scss: {
