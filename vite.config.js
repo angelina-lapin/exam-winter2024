@@ -10,7 +10,7 @@ export default defineConfig({
         profile: 'src/pages/profile.html',
         product: 'src/pages/product.html',
         login: 'src/pages/login.html',
-        register: 'src/pages/register.html',
+        register: 'src/pages/registration.html',
       },
     },
   },
