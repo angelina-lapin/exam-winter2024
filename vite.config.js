@@ -6,11 +6,11 @@ export default defineConfig({
     outDir: '../dist',
     rollupOptions: {
       input: {
-        main: 'index.html',
-        profile: 'pages/profile.html',
-        product: 'pages/product.html',
-        login: 'pages/login.html',
-        register: 'pages/register.html',
+        main: 'src/index.html',
+        profile: 'src/pages/profile.html',
+        product: 'src/pages/product.html',
+        login: 'src/pages/login.html',
+        register: 'src/pages/register.html',
       },
     },
   },
