@@ -26,10 +26,15 @@ async function renderProfile() {
   document.getElementById('profile-name').textContent = name;
   document.getElementById('profile-email').textContent = email;
   document.getElementById('profile-credit').textContent = credits || 0;
-  document.getElementById('profile-avatar').src =
-    avatar?.url || 'default-avatar.jpg';
-  document.getElementById('profile-banner-image').src =
-    banner?.url || 'default-banner.jpg';
+  document.getElementById('profile-avatar').src = avatar?.url || '';
+  document.getElementById('profile-banner-image').src = banner?.url || '';
+
+  document.getElementById('profile-avatar').style.display = avatar?.url
+    ? 'block'
+    : 'none';
+  document.getElementById('profile-banner-image').style.display = banner?.url
+    ? 'block'
+    : 'none';
 
   if (bio) {
     document.getElementById('profile-bio').textContent = bio;
@@ -146,9 +151,8 @@ async function renderUserListings() {
         (listing) => `
       <div class="col-md-4">
         <div class="card">
-          <img src="${listing.media?.[0]?.url || 'default-image.jpg'}" 
-               class="card-img-top" 
-               alt="${listing.media?.[0]?.alt || 'Listing image'}">
+          <img src="${media?.[0]?.url || ''}" alt="${media?.[0]?.alt || 'No image available'}" class="img-fluid mx-auto d-block my-4" style="display: ${media?.[0]?.url ? 'block' : 'none'};" />
+
           <div class="card-body">
             <h5 class="card-title">${listing.title}</h5>
             <p class="card-text">${listing.description || 'No description provided.'}</p>

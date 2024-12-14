@@ -33,7 +33,7 @@ export async function renderItems(
     col.innerHTML = `
       <div class="card h-100">
         <div class="card-img-container">
-          <img src="${item.media?.[0]?.url || 'default-image.jpg'}" class="card-img-top" alt="${item.media?.[0]?.alt || 'No description'}" />
+        <img src="${item.media?.[0]?.url || ''}" class="card-img-top" alt="${item.media?.[0]?.alt || 'Image unavailable'}" style="display: ${item.media?.[0]?.url ? 'block' : 'none'};" />
         </div>
         <div class="card-body">
           <h5 class="card-title">${item.title}</h5>
@@ -143,7 +143,7 @@ export function setupSearch() {
           col.innerHTML = `
             <div class="card h-100">
               <div class="card-img-container">
-                <img src="${item.media?.[0]?.url || 'default-image.jpg'}" class="card-img-top" alt="${item.media?.[0]?.alt || 'No description'}" />
+              <img src="${item.media?.[0]?.url || ''}" class="card-img-top" alt="${item.media?.[0]?.alt || 'Image unavailable'}" style="display: ${item.media?.[0]?.url ? 'block' : 'none'};" />
               </div>
               <div class="card-body d-flex flex-column justify-content-between">
                 <h5 class="card-title">${item.title}</h5>

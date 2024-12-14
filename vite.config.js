@@ -1,28 +1,35 @@
 import { defineConfig } from 'vite';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
+import path from 'path';
 
 export default defineConfig({
-  base: './',
-  root: './src',
+  base: '/',
   build: {
-    outDir: '../dist',
+    outDir: 'dist',
+    emptyOutDir: true,
     rollupOptions: {
       input: {
-        main: 'src/index.html',
-        profile: 'src/pages/profile.html',
-        product: 'src/pages/product.html',
-        login: 'src/pages/login.html',
-        register: 'src/pages/registration.html',
+        main: path.resolve(__dirname, 'src/index.html'),
+        profile: path.resolve(__dirname, 'src/pages/profile.html'),
+        product: path.resolve(__dirname, 'src/pages/product.html'),
+        login: path.resolve(__dirname, 'src/pages/login.html'),
+        register: path.resolve(__dirname, 'src/pages/registration.html'),
       },
     },
   },
-  rollupOptions: {
-    external: [
-      '/src/scripts/product.js',
-      '/src/scripts/profile.js',
-      '/src/scripts/forms.js',
-    ],
+  server: {
+    historyApiFallback: true,
   },
-
+  plugins: [
+    viteStaticCopy({
+      targets: [
+        {
+          src: '_redirects',
+          dest: '',
+        },
+      ],
+    }),
+  ],
   css: {
     preprocessorOptions: {
       scss: {

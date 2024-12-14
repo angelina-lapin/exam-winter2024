@@ -30,7 +30,7 @@ export async function renderProductDetails() {
     productContainer.innerHTML = `
       <div class="container">
         <h1 class="text-center">${title}</h1>
-        <img src="${media?.[0]?.url || 'default-image.jpg'}" alt="${media?.[0]?.alt || 'No description'}" class="img-fluid mx-auto d-block my-4" />
+        <img src="${media?.[0]?.url || ''}" alt="${media?.[0]?.alt || 'No image available'}" class="img-fluid mx-auto d-block my-4" style="display: ${media?.[0]?.url ? 'block' : 'none'};" />
         <p>${description || 'No description available.'}</p>
         <p><strong>Ends at:</strong> ${new Date(endsAt).toLocaleString()}</p>
         <p class="bids-display" style="font-size: 1.5rem; font-weight: bold;">

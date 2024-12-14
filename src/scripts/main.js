@@ -1,3 +1,5 @@
+import '../assets/scss/styles.scss';
+
 import {
   renderItems,
   setupSearch,
@@ -27,7 +29,7 @@ export function updateNavigation() {
   if (isAuthenticated()) {
     nav.innerHTML = `
       <li class="nav-item">
-        <a class="nav-link" href="/src/pages/profile.html">Profile</a>
+        <a class="nav-link" href="#" data-route="profile">Profile</a>
       </li>
       <li class="nav-item">
         <button class="btn btn-link nav-link" id="logoutBtn">Logout</button>
@@ -36,10 +38,10 @@ export function updateNavigation() {
   } else {
     nav.innerHTML = `
       <li class="nav-item">
-        <a class="nav-link" href="/src/pages/login.html">Login</a>
+        <a class="nav-link" href="#" data-route="login">Login</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/src/pages/registration.html">Register</a>
+        <a class="nav-link" href="#" data-route="register">Register</a>
       </li>
     `;
   }
@@ -49,7 +51,8 @@ export function updateNavigation() {
     logoutBtn.addEventListener('click', () => {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      window.location.href = '/index.html';
+      window.history.pushState({ page: 'home' }, '', '/');
+      loadPage('home');
     });
   }
 }
@@ -67,61 +70,96 @@ async function loadPage(page) {
     return;
   }
 
-  const res = await fetch(routes[page]);
-  const content = await res.text();
-  app.innerHTML = content;
+  console.log('Loading page:', routes[page]);
 
-  if (page === 'home') {
-    let welcomeSection = document.querySelector('.welcome-section');
-    if (!welcomeSection) {
-      console.warn(
-        'Welcome section not found in fetched content. Adding default structure...'
-      );
-      const container = app.querySelector('.container') || createContainer(app);
-      container.insertAdjacentHTML(
-        'afterbegin',
-        `<div class="welcome-section mb-4"></div>`
-      );
-      welcomeSection = container.querySelector('.welcome-section');
+  try {
+    const res = await fetch(routes[page]);
+    if (!res.ok) {
+      console.error('Error fetching page:', res.status, res.statusText);
+      app.innerHTML = `<p>Error loading page. Please try again later.</p>`;
+      return;
     }
 
-    updateWelcomeSection(welcomeSection);
+    const content = await res.text();
+    app.innerHTML = content;
 
-    let itemsGrid = document.querySelector('#items-grid');
-    let pagination = document.querySelector('#pagination');
-
-    if (!itemsGrid || !pagination) {
-      const container = app.querySelector('.container') || createContainer(app);
-
-      if (!itemsGrid) {
-        container.insertAdjacentHTML(
-          'beforeend',
-          `<div id="items-grid" class="row"></div>`
+    if (page === 'home') {
+      let welcomeSection = document.querySelector('.welcome-section');
+      if (!welcomeSection) {
+        console.warn(
+          'Welcome section not found in fetched content. Adding default structure...'
         );
-      }
-      if (!pagination) {
+        const container =
+          app.querySelector('.container') || createContainer(app);
         container.insertAdjacentHTML(
-          'beforeend',
-          `<div id="pagination" class="d-flex justify-content-center mt-4"></div>`
+          'afterbegin',
+          `<div class="welcome-section mb-4"></div>`
         );
+        welcomeSection = container.querySelector('.welcome-section');
       }
 
-      itemsGrid = document.querySelector('#items-grid');
-      pagination = document.querySelector('#pagination');
-    }
+      updateWelcomeSection(welcomeSection);
 
-    try {
-      const { items } = await fetchAuctions();
-      await renderItems(items);
-      setupSearch();
-      setupCardLinks();
-    } catch (error) {
-      console.error('Error loading home page:', error);
+      let itemsGrid = document.querySelector('#items-grid');
+      let pagination = document.querySelector('#pagination');
+
+      if (!itemsGrid || !pagination) {
+        const container =
+          app.querySelector('.container') || createContainer(app);
+
+        if (!itemsGrid) {
+          container.insertAdjacentHTML(
+            'beforeend',
+            `<div id="items-grid" class="row"></div>`
+          );
+        }
+        if (!pagination) {
+          container.insertAdjacentHTML(
+            'beforeend',
+            `<div id="pagination" class="d-flex justify-content-center mt-4"></div>`
+          );
+        }
+
+        itemsGrid = document.querySelector('#items-grid');
+        pagination = document.querySelector('#pagination');
+      }
+
+      try {
+        const { items } = await fetchAuctions();
+        await renderItems(items);
+        setupSearch();
+        setupCardLinks();
+      } catch (error) {
+        console.error('Error loading home page:', error);
+      }
     }
+  } catch (error) {
+    console.error('Error loading page:', error);
+    app.innerHTML = `<p>Error loading content. Please try again later.</p>`;
   }
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-  await loadPage('home');
+document.addEventListener('DOMContentLoaded', () => {
+  document.body.addEventListener('click', (event) => {
+    const target = event.target.closest('a[data-route]');
+    if (target) {
+      event.preventDefault();
+      const page = target.getAttribute('data-route');
+      window.history.pushState(
+        { page },
+        '',
+        page === 'home' ? '/' : `/${page}`
+      );
+      loadPage(page);
+    }
+  });
+
+  loadPage('home');
+
   updateNavigation();
+
+  window.addEventListener('popstate', (event) => {
+    const page = event.state?.page || 'home';
+    loadPage(page);
+  });
 });
