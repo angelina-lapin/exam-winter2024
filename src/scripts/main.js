@@ -8,6 +8,7 @@ import {
 } from './home.js';
 import { fetchAuctions } from './api.js';
 import { renderProductDetails } from './product.js';
+import { setupRegisterForm, setupLoginForm, displayAlert } from './forms.js';
 
 const app = document.getElementById('app');
 
@@ -82,39 +83,35 @@ async function loadPage(page) {
   try {
     const res = await fetch(routes[page]);
     if (!res.ok) {
-      console.error('Error fetching page:', res.status, res.statusText);
-      app.innerHTML = `<p>Error loading page. Please try again later.</p>`;
+      console.error(`Error fetching page "${page}":`, res.status, res.statusText);
+      app.innerHTML = `<p>Error loading page "${page}". Please try again later.</p>`;
       return;
     }
 
     const content = await res.text();
+
     app.innerHTML = `
       <header class="navbar navbar-expand-lg navbar-dark bg-dark-green">
-  <div class="container">
-    <a class="navbar-brand" href="/">
-      <img
-        src="/assets/logo.png"  
-        alt="AuctionPlace Logo"
-        class="logo"
-      />
-    </a>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarNav"
-      aria-controls="navbarNav"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto"></ul> 
-    </div>
-  </div>
-</header>
-
+        <div class="container">
+          <a class="navbar-brand" href="/">
+            <img src="/assets/logo.png" alt="AuctionPlace Logo" class="logo" />
+          </a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto"></ul>
+          </div>
+        </div>
+      </header>
 
       ${content}
 
@@ -122,71 +119,91 @@ async function loadPage(page) {
         <p>&copy; 2024 AuctionPlace. All rights reserved.</p>
       </footer>
     `;
+
     updateNavigation();
 
-    if (page === 'home') {
-      let welcomeSection = document.querySelector('.welcome-section');
-      if (!welcomeSection) {
-        console.warn(
-          'Welcome section not found in fetched content. Adding default structure...'
-        );
-        const container =
-          app.querySelector('.container') || createContainer(app);
-        container.insertAdjacentHTML(
-          'afterbegin',
-          `<div class="welcome-section mb-4"></div>`
-        );
-        welcomeSection = container.querySelector('.welcome-section');
-      }
-
-      updateWelcomeSection(welcomeSection);
-
-      let itemsGrid = document.querySelector('#items-grid');
-      let pagination = document.querySelector('#pagination');
-
-      if (!itemsGrid || !pagination) {
-        const container =
-          app.querySelector('.container') || createContainer(app);
-
-        if (!itemsGrid) {
-          container.insertAdjacentHTML(
-            'beforeend',
-            `<div id="items-grid" class="row"></div>`
+    const pageHandlers = {
+      home: async () => {
+        let welcomeSection = document.querySelector('.welcome-section');
+        if (!welcomeSection) {
+          console.warn(
+            'Welcome section not found in fetched content. Adding default structure...'
           );
-        }
-        if (!pagination) {
+          const container =
+            app.querySelector('.container') || createContainer(app);
           container.insertAdjacentHTML(
-            'beforeend',
-            `<div id="pagination" class="d-flex justify-content-center mt-4"></div>`
+            'afterbegin',
+            `<div class="welcome-section mb-4"></div>`
           );
+          welcomeSection = container.querySelector('.welcome-section');
         }
 
-        itemsGrid = document.querySelector('#items-grid');
-        pagination = document.querySelector('#pagination');
-      }
+        updateWelcomeSection(welcomeSection);
 
-      try {
-        const { items } = await fetchAuctions();
-        await renderItems(items);
-        setupSearch();
-        setupCardLinks();
-      } catch (error) {
-        console.error('Error loading home page:', error);
-      }
-    } else if (page === 'product') {
-      const productId = new URLSearchParams(window.location.search).get('id');
-      if (productId) {
-        await renderProductDetails(productId);
-      } else {
-        console.error('Product ID not found in URL');
-        app.innerHTML = `<p>Product not found.</p>`;
-      }
+        let itemsGrid = document.querySelector('#items-grid');
+        let pagination = document.querySelector('#pagination');
+
+        if (!itemsGrid || !pagination) {
+          const container =
+            app.querySelector('.container') || createContainer(app);
+
+          if (!itemsGrid) {
+            container.insertAdjacentHTML(
+              'beforeend',
+              `<div id="items-grid" class="row"></div>`
+            );
+          }
+          if (!pagination) {
+            container.insertAdjacentHTML(
+              'beforeend',
+              `<div id="pagination" class="d-flex justify-content-center mt-4"></div>`
+            );
+          }
+
+          itemsGrid = document.querySelector('#items-grid');
+          pagination = document.querySelector('#pagination');
+        }
+
+        try {
+          const { items } = await fetchAuctions();
+          await renderItems(items);
+          setupSearch();
+          setupCardLinks();
+        } catch (error) {
+          console.error('Error loading home page:', error);
+        }
+      },
+      register: () => {
+        setupRegisterForm();
+        displayAlert();
+      },
+      login: () => {
+        setupLoginForm();
+        displayAlert();
+      },
+      product: async () => {
+        const productId = new URLSearchParams(window.location.search).get('id');
+        if (productId) {
+          await renderProductDetails(productId);
+        } else {
+          console.error('Product ID not found in URL');
+          app.innerHTML = `<p>Product not found.</p>`;
+        }
+      },
+    };
+
+    if (pageHandlers[page]) {
+      await pageHandlers[page]();
+    } else {
+      console.error(`No handler found for page "${page}"`);
+      app.innerHTML = `<p>Page "${page}" not found.</p>`;
     }
   } catch (error) {
     console.error('Error loading page:', error);
     app.innerHTML = `<p>Error loading content. Please try again later.</p>`;
   }
 }
+
 
 document.addEventListener('DOMContentLoaded', () => {
   document.body.addEventListener('click', (event) => {

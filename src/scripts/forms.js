@@ -1,21 +1,7 @@
 import { register } from '../js/api/register.js';
 import { login } from '../js/api/login.js';
 
-document.addEventListener('DOMContentLoaded', () => {
-  const alertContainer = document.getElementById('alert-container');
-  const successMessage = localStorage.getItem('successMessage');
-
-  if (successMessage && alertContainer) {
-    const alert = document.createElement('div');
-    alert.className = 'alert alert-success';
-    alert.role = 'alert';
-    alert.textContent = successMessage;
-
-    alertContainer.appendChild(alert);
-
-    localStorage.removeItem('successMessage');
-  }
-
+export function setupRegisterForm() {
   const registerForm = document.getElementById('registerForm');
   if (registerForm) {
     registerForm.addEventListener('submit', async (e) => {
@@ -32,14 +18,16 @@ document.addEventListener('DOMContentLoaded', () => {
           'successMessage',
           'Registration successful! Please log in using your new account.'
         );
-        window.location.href = './login.html';
+        window.location.href = '/src/pages/login.html';
       } catch (error) {
         console.error('Registration error:', error);
         alert(error.message || 'Registration failed');
       }
     });
   }
+}
 
+export function setupLoginForm() {
   const loginForm = document.getElementById('loginForm');
   if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
@@ -61,4 +49,21 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
-});
+}
+
+export function displayAlert() {
+  const alertContainer = document.getElementById('alert-container');
+  const successMessage = localStorage.getItem('successMessage');
+
+  if (successMessage && alertContainer) {
+    const alert = document.createElement('div');
+    alert.className = 'alert alert-success';
+    alert.role = 'alert';
+    alert.textContent = successMessage;
+
+    alertContainer.appendChild(alert);
+
+    localStorage.removeItem('successMessage');
+  }
+}
+
