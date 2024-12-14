@@ -7,6 +7,7 @@ import {
   updateWelcomeSection,
 } from './home.js';
 import { fetchAuctions } from './api.js';
+import { renderProductDetails } from './product.js';
 
 const app = document.getElementById('app');
 
@@ -15,6 +16,7 @@ const routes = {
   login: '/src/pages/login.html',
   register: '/src/pages/registration.html',
   profile: '/src/pages/profile.html',
+  product: '/src/pages/product.html',
 };
 
 export function isAuthenticated() {
@@ -24,6 +26,11 @@ export function isAuthenticated() {
 
 export function updateNavigation() {
   const nav = document.querySelector('.navbar-nav');
+  if (!nav) {
+    console.warn('Navigation container not found');
+    return;
+  }
+
   nav.innerHTML = '';
 
   if (isAuthenticated()) {
@@ -81,7 +88,41 @@ async function loadPage(page) {
     }
 
     const content = await res.text();
-    app.innerHTML = content;
+    app.innerHTML = `
+      <header class="navbar navbar-expand-lg navbar-dark bg-dark-green">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <img
+        src="/assets/logo.png"  
+        alt="AuctionPlace Logo"
+        class="logo"
+      />
+    </a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto"></ul> 
+    </div>
+  </div>
+</header>
+
+
+      ${content}
+
+      <footer class="footer bg-dark-green text-white text-center py-3">
+        <p>&copy; 2024 AuctionPlace. All rights reserved.</p>
+      </footer>
+    `;
+    updateNavigation();
 
     if (page === 'home') {
       let welcomeSection = document.querySelector('.welcome-section');
@@ -132,6 +173,14 @@ async function loadPage(page) {
       } catch (error) {
         console.error('Error loading home page:', error);
       }
+    } else if (page === 'product') {
+      const productId = new URLSearchParams(window.location.search).get('id');
+      if (productId) {
+        await renderProductDetails(productId);
+      } else {
+        console.error('Product ID not found in URL');
+        app.innerHTML = `<p>Product not found.</p>`;
+      }
     }
   } catch (error) {
     console.error('Error loading page:', error);
@@ -141,22 +190,23 @@ async function loadPage(page) {
 
 document.addEventListener('DOMContentLoaded', () => {
   document.body.addEventListener('click', (event) => {
-    const target = event.target.closest('a[data-route]');
+    const target = event.target.closest('a[href]');
     if (target) {
-      event.preventDefault();
-      const page = target.getAttribute('data-route');
-      window.history.pushState(
-        { page },
-        '',
-        page === 'home' ? '/' : `/${page}`
-      );
-      loadPage(page);
+      const href = target.getAttribute('href');
+      if (href.startsWith('/src/pages/')) {
+        event.preventDefault();
+        const page = Object.keys(routes).find((key) =>
+          href.includes(routes[key])
+        );
+        if (page) {
+          window.history.pushState({ page }, '', href);
+          loadPage(page);
+        }
+      }
     }
   });
 
   loadPage('home');
-
-  updateNavigation();
 
   window.addEventListener('popstate', (event) => {
     const page = event.state?.page || 'home';
