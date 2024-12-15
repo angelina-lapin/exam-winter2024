@@ -1,24 +1,5 @@
 {
-  "type": "module",
   "dependencies": {
-    "bootstrap": "^5.3.3",
-    "sass": "^1.81.0"
-  },
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "serve": "vite preview",
-    "watch-css": "sass --watch --load-path=node_modules src/assets/scss/styles.scss dist/styles.css"
-  },
-  "devDependencies": {
-    "fs-extra": "^11.2.0",
-    "prettier": "^3.3.3",
-    "vite-plugin-static-copy": "^2.2.0"
-  },
-  "prettier": {
-    "semi": true,
-    "singleQuote": true,
-    "tabWidth": 2,
-    "trailingComma": "es5"
+    "bootstrap": "^5.3.3"
   }
 }

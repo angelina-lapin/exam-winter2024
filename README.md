@@ -35,37 +35,37 @@ This is a web application for managing and participating in auctions. Users can 
   - JavaScript (ES6+)
 - **Backend API:**
   - REST API integration using Fetch API.
-- **Build Tools:**
-  - [Vite](https://vitejs.dev) for development and build process.
+- **Development Server:**
+  - http-server for serving static files locally.
 
 ## Installation
 
 ### Prerequisites
 
 - Node.js (v14 or higher)
+- npm (Node Package Manager)
 - A web browser
 
 ### Steps
 
 1. Clone the repository:
+
    ```bash
-   git clone https://github.com/your-username/auction-website.git
+   git clone https://github.com/angelina-lapin/exam-winter2024
    cd auction-website
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 3. Start the development server:
-   ```bash
-   npm run dev
-   ```
 
-4. Open the application in your browser:
    ```bash
-   http://localhost:5173
+   npm install -g http-server
+
    ```
 
 ## Usage
@@ -73,15 +73,15 @@ This is a web application for managing and participating in auctions. Users can 
 ### Running the Application
 
 1. **Start the Server**:  
-   After installing dependencies, run the development server using:
+   After installing dependencies, you can serve the application locally using http-server:
+
    ```bash
-   npm run dev
+   http-server ./ -p 8080
+
    ```
 
-   The application will be available at [http://localhost:5173](http://localhost:5173).
-
 2. **Explore the Features**:
-   
+
    - **Homepage**: View a grid of auction listings.
    - **Profile Page**: Manage your profile and view your created listings.
    - **Product Details**: Access detailed information about specific listings.
@@ -105,14 +105,13 @@ This is a web application for managing and participating in auctions. Users can 
 ## Folder Structure
 
 ```
-dist/
-├── styles.css
-├── styles.css.map
+
 node_modules/
 src/
 ├── assets/
 │   ├── images/
 │   └── scss/
+│   └── css/
 ├── js/
 │   ├── api/
 │   │   ├── login.js
@@ -132,16 +131,16 @@ src/
 │   ├── main.js
 │   └── profile.js
 ├── index.html
-├── package-lock.json
-├── package.json
-├── readme.md
-├── vite.config.js
-```
+package-lock.json
+package.json
+readme.md
 
+```
 
 ## API Reference
 
 ### Base URL
+
 The API base URL is:  
 `https://docs.noroff.dev/docs/v2/auction-house`
 
@@ -169,9 +168,6 @@ The API base URL is:
 
 For a complete reference, see the [API Documentation](https://docs.noroff.dev/docs/v2/auction-house).
 
-
 ## Contributing
 
 I welcome contributions from students and educators. If you have any additional study materials or practice exams, please submit a pull request.
-
-

@@ -49,7 +49,7 @@ export function updateNavigation() {
     logoutBtn.addEventListener('click', () => {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      window.location.href = '/index.html';
+      window.location.href = '/src/index.html';
     });
   }
 }
@@ -93,6 +93,7 @@ async function loadPage(page) {
     let pagination = document.querySelector('#pagination');
 
     if (!itemsGrid || !pagination) {
+     
       const container = app.querySelector('.container') || createContainer(app);
 
       if (!itemsGrid) {

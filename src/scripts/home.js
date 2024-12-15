@@ -31,17 +31,22 @@ export async function renderItems(
     col.className = 'col-md-4 mb-4';
 
     col.innerHTML = `
-      <div class="card h-100">
-        <div class="card-img-container">
-          <img src="${item.media?.[0]?.url || 'default-image.jpg'}" class="card-img-top" alt="${item.media?.[0]?.alt || 'No description'}" />
-        </div>
-        <div class="card-body">
-          <h5 class="card-title">${item.title}</h5>
-          <p class="card-text">Starting bid: ${item._count?.bids || 0} points</p>
-          <a href="/src/pages/product.html?id=${item.id}" class="btn btn-dark">View Details</a>
-        </div>
-      </div>
-    `;
+  <div class="card h-100">
+    <div class="card-img-container">
+      ${
+        item.media?.[0]?.url
+          ? `<img src="${item.media[0].url}" class="card-img-top" alt="${item.media?.[0]?.alt || 'No description'}" />`
+          : ''
+      }
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">${item.title}</h5>
+      <p class="card-text">Starting bid: ${item._count?.bids || 0} points</p>
+      <a href="/src/pages/product.html?id=${item.id}" class="btn btn-dark">View Details</a>
+    </div>
+  </div>
+`;
+
     itemsGrid.appendChild(col);
   });
 
@@ -147,15 +152,20 @@ export function setupSearch() {
 
           col.innerHTML = `
             <div class="card h-100">
-              <div class="card-img-container">
-                <img src="${item.media?.[0]?.url || 'default-image.jpg'}" class="card-img-top" alt="${item.media?.[0]?.alt || 'No description'}" />
-              </div>
-              <div class="card-body d-flex flex-column justify-content-between">
-                <h5 class="card-title">${item.title}</h5>
-                <p class="card-text">Starting bid: ${item._count?.bids || 0} points</p>
-                <a href="/src/pages/product.html?id=${item.id}" class="btn btn-dark">View Details</a>
-              </div>
-            </div>
+  <div class="card-img-container">
+    ${
+      item.media?.[0]?.url
+        ? `<img src="${item.media[0].url}" class="card-img-top" alt="${item.media?.[0]?.alt || 'No description'}" />`
+        : ''
+    }
+  </div>
+  <div class="card-body d-flex flex-column justify-content-between">
+    <h5 class="card-title">${item.title}</h5>
+    <p class="card-text">Starting bid: ${item._count?.bids || 0} points</p>
+    <a href="/src/pages/product.html?id=${item.id}" class="btn btn-dark">View Details</a>
+  </div>
+</div>
+
           `;
           itemsGrid.appendChild(col);
         });

@@ -30,14 +30,19 @@ export async function renderProductDetails() {
 
     productContainer.innerHTML = `
       <div class="container">
-        <h1 class="text-center">${title}</h1>
-        <img src="${media?.[0]?.url || 'default-image.jpg'}" alt="${media?.[0]?.alt || 'No description'}" class="img-fluid mx-auto d-block my-4" />
-        <p>${description || 'No description available.'}</p>
-        <p><strong>Ends at:</strong> ${new Date(endsAt).toLocaleString()}</p>
-        <p class="bids-display" style="font-size: 1.5rem; font-weight: bold;">
-          <strong>Bids:</strong> <span class="bids-count">${_count?.bids || 0}</span>
-        </p>
-      </div>
+  <h1 class="text-center">${title}</h1>
+  ${
+    media?.[0]?.url
+      ? `<img src="${media[0].url}" alt="${media?.[0]?.alt || 'No description'}" class="img-fluid mx-auto d-block my-4" />`
+      : ''
+  }
+  <p>${description || 'No description available.'}</p>
+  <p><strong>Ends at:</strong> ${new Date(endsAt).toLocaleString()}</p>
+  <p class="bids-display" style="font-size: 1.5rem; font-weight: bold;">
+    <strong>Bids:</strong> <span class="bids-count">${_count?.bids || 0}</span>
+  </p>
+</div>
+
     `;
   } catch (error) {
     console.error('Error rendering product details:', error);
