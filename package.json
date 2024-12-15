@@ -1,5 +1,19 @@
 {
-  "dependencies": {
-    "bootstrap": "^5.3.3"
+  "name": "auction-website",
+  "version": "1.0.0",
+  "description": "A web application for managing and participating in auctions.",
+  "main": "index.js",
+  "homepage": "https://angelina-lapin.github.io/auction-website",
+  "scripts": {
+    "deploy": "gh-pages -d ."
+  },
+  "devDependencies": {
+    "gh-pages": "^4.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/angelina-lapin/exam-winter2024"
+    },
+    "author": "",
+    "license": "ISC"
   }
-}
