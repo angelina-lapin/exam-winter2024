@@ -3,11 +3,14 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 import path from 'path';
 
 export default defineConfig({
-  base: '/',
+  appType: 'mpa',
+  base: '',
   build: {
+    target: 'esnext',
     outDir: 'dist',
     assetsDir: 'assets',
     emptyOutDir: true,
+    minify: false,
     rollupOptions: {
       input: {
         main: path.resolve(__dirname, 'src/index.html'),
@@ -20,6 +23,9 @@ export default defineConfig({
     },
   },
   server: {
+    historyApiFallback: true,
+  },
+  preview: {
     historyApiFallback: true,
   },
   plugins: [

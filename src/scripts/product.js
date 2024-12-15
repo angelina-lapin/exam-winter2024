@@ -18,6 +18,7 @@ export async function renderProductDetails() {
     }
 
     const product = await fetchProductById(productId);
+    console.log('Fetched product:', product);
 
     if (!product || !product.id) {
       console.error('Invalid product data:', product);
@@ -30,7 +31,7 @@ export async function renderProductDetails() {
     productContainer.innerHTML = `
       <div class="container">
         <h1 class="text-center">${title}</h1>
-        <img src="${media?.[0]?.url || ''}" alt="${media?.[0]?.alt || 'No image available'}" class="img-fluid mx-auto d-block my-4" style="display: ${media?.[0]?.url ? 'block' : 'none'};" />
+        <img src="${media?.[0]?.url || 'default-image.jpg'}" alt="${media?.[0]?.alt || 'No description'}" class="img-fluid mx-auto d-block my-4" />
         <p>${description || 'No description available.'}</p>
         <p><strong>Ends at:</strong> ${new Date(endsAt).toLocaleString()}</p>
         <p class="bids-display" style="font-size: 1.5rem; font-weight: bold;">
@@ -61,6 +62,8 @@ export async function setupBidForm(productId) {
 
     const bids = product.data?.bids || [];
     highestBid = bids.length ? Math.max(...bids.map((bid) => bid.amount)) : 0;
+
+    console.log('Highest current bid:', highestBid);
   } catch (error) {
     console.error('Error fetching product bids:', error);
   }
@@ -141,6 +144,7 @@ export async function renderBids(productId) {
 document.addEventListener('DOMContentLoaded', async () => {
   updateNavigation();
   const productId = new URLSearchParams(window.location.search).get('id');
+  console.log('Product ID from URL:', productId);
   if (productId) {
     await renderProductDetails();
     await setupBidForm(productId);
