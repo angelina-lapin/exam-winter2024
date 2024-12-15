@@ -1,0 +1,116 @@
+@use "../../../node_modules/bootstrap/scss/bootstrap" as *;
+
+
+
+body {
+  font-family: $font-family-base;
+}
+
+.bg-dark-green {
+  background-color: #627971 !important;
+}
+
+.navbar-brand .logo {
+  height: 50px;
+}
+
+.text-white {
+  color: #ffffff !important;
+}
+
+
+.search-bar input {
+  border-radius: 4px;
+}
+
+.items-section {
+  background-color: #f8f9fa;
+}
+
+.btn-outline-dark {
+  background: #ffffff; 
+  color: #000000; 
+  border-color: #000000; 
+
+  &:hover {
+    background-color: #f0f0f0; 
+    color: #000000;
+  }
+}
+
+.btn-dark {
+  background-color: #000000; 
+  color: #ffffff; 
+  border-color: #000000; 
+
+  &:hover {
+    background-color: #1a1a1a; 
+    color: #ffffff;
+  }
+}
+
+
+.card {
+  height: 100%; 
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.card-img-container {
+  width: 100%;
+  height: 200px; 
+  overflow: hidden;
+}
+
+.card-img-top {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+.how-it-works-section h5 {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+
+form {
+  background-color: #f8f9fa;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+form .btn {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+form .form-label {
+  font-weight: bold;
+}
+
+form input {
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+
+.welcome-section {
+  background-color: #627971;
+  color: white; 
+  padding: 20px 0; 
+}
+
+.container {
+  max-width: 100%; 
+  margin: 0 auto;
+}
+
