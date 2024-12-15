@@ -1,18 +1,11 @@
-import {
-  renderItems,
-  setupSearch,
-  setupCardLinks,
-  updateWelcomeSection,
-} from './home.js';
-import { fetchAuctions } from './api.js';
-
 const app = document.getElementById('app');
 
 const routes = {
-  home: '/src/pages/home.html',
-  login: '/src/pages/login.html',
-  register: '/src/pages/registration.html',
-  profile: '/src/pages/profile.html',
+  home: './pages/home.html',
+  login: './pages/login.html',
+  register: './pages/registration.html',
+  profile: './pages/profile.html',
+  product: './pages/product.html',
 };
 
 export function isAuthenticated() {
@@ -22,12 +15,14 @@ export function isAuthenticated() {
 
 export function updateNavigation() {
   const nav = document.querySelector('.navbar-nav');
+  if (!nav) return;
+
   nav.innerHTML = '';
 
   if (isAuthenticated()) {
     nav.innerHTML = `
       <li class="nav-item">
-        <a class="nav-link" href="/src/pages/profile.html">Profile</a>
+        <a class="nav-link" href="profile">Profile</a>
       </li>
       <li class="nav-item">
         <button class="btn btn-link nav-link" id="logoutBtn">Logout</button>
@@ -36,10 +31,10 @@ export function updateNavigation() {
   } else {
     nav.innerHTML = `
       <li class="nav-item">
-        <a class="nav-link" href="/src/pages/login.html">Login</a>
+        <a class="nav-link" href="login">Login</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/src/pages/registration.html">Register</a>
+        <a class="nav-link" href="register">Register</a>
       </li>
     `;
   }
@@ -49,82 +44,113 @@ export function updateNavigation() {
     logoutBtn.addEventListener('click', () => {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      window.location.href = '/src/index.html';
+      window.history.pushState({}, '', '/');
+      loadPage('home');
     });
   }
 }
 
-function createContainer(parent) {
-  const container = document.createElement('div');
-  container.classList.add('container');
-  parent.appendChild(container);
-  return container;
-}
-
 async function loadPage(page) {
-  if (!app) {
-    console.warn('App container not found.');
+  if (!routes[page]) {
+    console.error(`Route "${page}" not found.`);
+    app.innerHTML = `<p class="text-danger text-center">Page not found: ${page}</p>`;
     return;
   }
 
-  const res = await fetch(routes[page]);
-  const content = await res.text();
-  app.innerHTML = content;
+  try {
+    const response = await fetch(routes[page]);
+    if (!response.ok) throw new Error(`Failed to fetch ${routes[page]}`);
+    const content = await response.text();
+    app.innerHTML = content;
 
-  if (page === 'home') {
-    console.log('Home page loaded...');
-
-    let welcomeSection = document.querySelector('.welcome-section');
-    if (!welcomeSection) {
-      console.warn(
-        'Welcome section not found in fetched content. Adding default structure...'
-      );
-      const container = app.querySelector('.container') || createContainer(app);
-      container.insertAdjacentHTML(
-        'afterbegin',
-        `<div class="welcome-section mb-4"></div>`
-      );
-      welcomeSection = container.querySelector('.welcome-section');
+    if (page === 'home') {
+      setupHomePage();
+    } else if (page === 'login') {
+      setupLoginPage();
+    } else if (page === 'register') {
+      setupRegisterPage();
+    } else if (page === 'profile') {
+      setupProfilePage();
+    } else if (page === 'product') {
+      setupProductPage();
     }
-
-    updateWelcomeSection(welcomeSection);
-
-    let itemsGrid = document.querySelector('#items-grid');
-    let pagination = document.querySelector('#pagination');
-
-    if (!itemsGrid || !pagination) {
-     
-      const container = app.querySelector('.container') || createContainer(app);
-
-      if (!itemsGrid) {
-        container.insertAdjacentHTML(
-          'beforeend',
-          `<div id="items-grid" class="row"></div>`
-        );
-      }
-      if (!pagination) {
-        container.insertAdjacentHTML(
-          'beforeend',
-          `<div id="pagination" class="d-flex justify-content-center mt-4"></div>`
-        );
-      }
-
-      itemsGrid = document.querySelector('#items-grid');
-      pagination = document.querySelector('#pagination');
-    }
-
-    try {
-      const { items } = await fetchAuctions();
-      await renderItems(items);
-      setupSearch();
-      setupCardLinks();
-    } catch (error) {
-      console.error('Error loading home page:', error);
-    }
+  } catch (error) {
+    console.error('Error loading page:', error);
+    app.innerHTML = `<p class="text-danger text-center">Error loading ${page}</p>`;
   }
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-  await loadPage('home');
+function setupHomePage() {
+  console.log('Home page loaded...');
+  import('./home.js').then((module) => {
+    fetchAuctions().then(({ items }) => {
+      if (!items.length) {
+        console.warn('No items found to render.');
+      }
+      module.renderItems(items); 
+    });
+    module.setupSearch();
+    module.setupCardLinks();
+  });
+}
+
+function setupLoginPage() {
+  console.log('Login page loaded...');
+  import('./scripts/forms.js').then((module) => {
+    module.setupLoginForm();
+  });
+}
+
+function setupRegisterPage() {
+  console.log('Register page loaded...');
+  import('./scripts/forms.js').then((module) => {
+    module.setupRegisterForm();
+  });
+}
+
+function setupProfilePage() {
+  console.log('Profile page loaded...');
+  import('./profile.js').then((module) => {
+    module.renderProfile();
+    module.setupAvatarChange();
+    module.setupBannerChange();
+    module.setupCreateListingForm();
+    module.renderUserListings();
+  });
+}
+
+function setupProductPage() {
+  console.log('Product page loaded...');
+  const productId = new URLSearchParams(window.location.search).get('id');
+  if (!productId) {
+    console.error('Product ID not found in URL');
+    app.innerHTML = '<p class="text-danger text-center">Product not found.</p>';
+    return;
+  }
+  import('./product.js').then((module) => {
+    module.renderProductDetails();
+    module.setupBidForm(productId);
+    module.renderBids(productId);
+  });
+}
+
+document.body.addEventListener('click', (event) => {
+  const target = event.target.closest('a');
+  if (target && target.getAttribute('href') && !target.getAttribute('href').startsWith('http')) {
+    event.preventDefault();
+    const page = target.getAttribute('href');
+    window.history.pushState({}, '', page);
+    loadPage(page);
+  }
+});
+
+window.addEventListener('popstate', () => {
+  const path = window.location.pathname.split('/').pop();
+  loadPage(path || 'home');
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const path = window.location.pathname.split('/').pop();
+  loadPage(path || 'home');
   updateNavigation();
 });

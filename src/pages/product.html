@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Profile Page</title>
+    <title>Product Details</title>
     <link href="../assets/css/styles.css" rel="stylesheet" />
 
     <link
@@ -14,20 +14,32 @@
   <body>
     <header class="navbar navbar-expand-lg navbar-dark bg-dark-green">
       <div class="container">
-        <a class="navbar-brand" href="/src/index.html">
+        <a class="navbar-brand" href="../index.html">
           <img
-            src="/src/assets/logo.png"
+            src="../assets/images/logo.png"
             alt="AuctionPlace Logo"
             class="logo"
           />
         </a>
-        <div class="collapse navbar-collapse">
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto"></ul>
         </div>
       </div>
     </header>
 
-    <div id="product-details"></div>
+    <main id="product-details" class="container my-5">
+    </main>
 
     <section id="bids-section" class="container my-5">
       <div id="bids-container"></div>
@@ -51,6 +63,6 @@
       <p>&copy; 2024 AuctionPlace. All rights reserved.</p>
     </footer>
 
-    <script src="/src/scripts/product.js" type="module"></script>
+    <script src="../scripts/product.js" type="module"></script>
   </body>
 </html>

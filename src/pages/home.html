@@ -1,29 +1,22 @@
-<section class="welcome-section text-center text-white bg-dark-green py-5">
+<main id="app">
   <div class="container">
-    <h1>Welcome to AuctionPlace!</h1>
-    <p>Start bidding on items or put up your own for auction.</p>
-    <div class="search-bar d-flex justify-content-center mt-4">
-      <input
-        id="searchInput"
-        type="text"
-        class="form-control w-50 me-2"
-        placeholder="Search for items"
-      />
-      <button id="searchButton" class="btn btn-outline-dark">Search</button>
-    </div>
+    <section class="welcome-section text-center text-white bg-dark-green py-5">
+      <h1>Welcome to AuctionPlace!</h1>
+      <p>Start bidding on items or put up your own for auction.</p>
+      <div class="search-bar d-flex justify-content-center mt-4">
+        <input id="search-input" type="text" class="form-control w-50 me-2" placeholder="Search for items">
+        <button id="search-button" class="btn btn-outline-dark">Search</button>
+      </div>
+    </section>
 
-    <button class="btn btn-dark mt-4">Register now and get 1000 credits</button>
+    <section class="items-section py-5 bg-light">
+      <h2 class="text-center mb-4">Available Items</h2>
+      <div id="items-grid" class="row"></div>
+      <div id="pagination" class="d-flex justify-content-center mt-4"></div>
+    </section>
   </div>
-</section>
+</main>
 
-<section class="items-section py-5 bg-light">
-  <div class="container">
-    <h2 class="text-center mb-4">Available Items</h2>
-    <div class="row" id="items-grid"></div>
-    <div class="text-center mt-4">
-    </div>
-  </div>
-</section>
 
 <section class="how-it-works-section bg-white py-5">
   <div class="container text-center">
