@@ -98,10 +98,13 @@ export function setupCardLinks() {
         console.error('No product ID found on card.');
         return;
       }
-      window.location.href = `/src/pages/product.html?id=${productId}`;
+      const productUrl = `/product?id=${productId}`;
+      window.history.pushState({}, '', productUrl);
+      loadPage('product'); 
     });
   });
 }
+
 
 export function setupPagination(container, totalPages, currentPage, listings) {
   container.innerHTML = '';

@@ -1,3 +1,6 @@
+import { fetchAuctions } from './api.js';
+
+
 const app = document.getElementById('app');
 
 const routes = {
@@ -128,11 +131,12 @@ function setupProductPage() {
     return;
   }
   import('./product.js').then((module) => {
-    module.renderProductDetails();
+    module.renderProductDetails(productId); 
     module.setupBidForm(productId);
     module.renderBids(productId);
   });
 }
+
 
 document.body.addEventListener('click', (event) => {
   const target = event.target.closest('a');
