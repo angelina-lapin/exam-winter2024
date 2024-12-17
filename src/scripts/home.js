@@ -1,15 +1,15 @@
-import { searchListings } from './api.js';
+import { searchListings } from "./api.js";
 
 export async function renderItems(
   listings = [],
   currentPage = 1,
   itemsPerPage = 50
 ) {
-  const itemsGrid = document.getElementById('items-grid');
-  const paginationContainer = document.getElementById('pagination');
+  const itemsGrid = document.getElementById("items-grid");
+  const paginationContainer = document.getElementById("pagination");
 
   if (!itemsGrid || !paginationContainer) {
-    console.error('Required containers not found.');
+    console.error("Required containers not found.");
     return;
   }
 
@@ -25,24 +25,26 @@ export async function renderItems(
     return;
   }
 
-  itemsGrid.innerHTML = '';
+  itemsGrid.innerHTML = "";
   paginatedListings.forEach((item) => {
-    const col = document.createElement('div');
-    col.className = 'col-md-4 mb-4';
+    const col = document.createElement("div");
+    col.className = "col-md-4 mb-4";
 
     col.innerHTML = `
   <div class="card h-100">
     <div class="card-img-container">
       ${
         item.media?.[0]?.url
-          ? `<img src="${item.media[0].url}" class="card-img-top" alt="${item.media?.[0]?.alt || 'No description'}" />`
-          : ''
+          ? `<img src="${item.media[0].url}" class="card-img-top" alt="${
+              item.media?.[0]?.alt || "No description"
+            }" />`
+          : ""
       }
     </div>
     <div class="card-body">
       <h5 class="card-title">${item.title}</h5>
       <p class="card-text">Starting bid: ${item._count?.bids || 0} points</p>
-      <a href="/src/pages/product.html?id=${item.id}" class="btn btn-dark">View Details</a>
+<a href="./product.html?id=${item.id}" class="btn btn-dark">View Details</a>
     </div>
   </div>
 `;
@@ -59,8 +61,8 @@ export async function renderItems(
 }
 
 export function updateWelcomeSection(welcomeSection) {
-  const user = JSON.parse(localStorage.getItem('user'));
-  const userName = user?.data?.name || 'Guest';
+  const user = JSON.parse(localStorage.getItem("user"));
+  const userName = user?.data?.name || "Guest";
 
   welcomeSection.innerHTML = `
     <div class="container-fluid welcome-section text-center text-white bg-dark-green py-5">
@@ -72,7 +74,7 @@ export function updateWelcomeSection(welcomeSection) {
       </div>
       ${
         user
-          ? ''
+          ? ""
           : '<button class="btn btn-dark mt-4">Register now and get 1000 credits</button>'
       }
     </div>
@@ -80,92 +82,94 @@ export function updateWelcomeSection(welcomeSection) {
 }
 
 export function setupCardLinks() {
-  console.log('Setting up card links...');
-  const cards = document.querySelectorAll('.card');
+  console.log("Setting up card links...");
+  const cards = document.querySelectorAll(".card");
 
   if (!cards.length) {
-    console.log('No cards found for setting up links.');
+    console.log("No cards found for setting up links.");
     return;
   }
 
   cards.forEach((card) => {
-    card.addEventListener('click', (event) => {
-      if (event.target.tagName === 'A') {
+    card.addEventListener("click", (event) => {
+      if (event.target.tagName === "A") {
         return;
       }
-      const productId = card.getAttribute('data-id');
+      const productId = card.getAttribute("data-id");
       if (!productId) {
-        console.error('No product ID found on card.');
+        console.error("No product ID found on card.");
         return;
       }
       const productUrl = `/product?id=${productId}`;
-      window.history.pushState({}, '', productUrl);
-      loadPage('product'); 
+      window.history.pushState({}, "", productUrl);
+      loadPage("product");
     });
   });
 }
 
-
 export function setupPagination(container, totalPages, currentPage, listings) {
-  container.innerHTML = '';
+  container.innerHTML = "";
   for (let i = 1; i <= totalPages; i++) {
-    const button = document.createElement('button');
-    button.className = 'btn btn-outline-dark mx-1';
+    const button = document.createElement("button");
+    button.className = "btn btn-outline-dark mx-1";
     button.textContent = i;
     if (i === currentPage) {
-      button.classList.add('active');
+      button.classList.add("active");
     }
-    button.addEventListener('click', () => renderItems(listings, i));
+    button.addEventListener("click", () => renderItems(listings, i));
     container.appendChild(button);
   }
 }
 
 export function setupSearch() {
-  console.log('Setting up search...');
-  const searchButton = document.getElementById('search-button');
-  const searchInput = document.getElementById('search-input');
-  const itemsGrid = document.getElementById('items-grid');
+  console.log("Setting up search...");
+  const searchButton = document.getElementById("search-button");
+  const searchInput = document.getElementById("search-input");
+  const itemsGrid = document.getElementById("items-grid");
 
   if (!searchButton || !searchInput || !itemsGrid) {
-    console.error('Search elements not found');
+    console.error("Search elements not found");
     return;
   }
 
-  searchButton.addEventListener('click', async () => {
-    console.log('Search button clicked!');
+  searchButton.addEventListener("click", async () => {
+    console.log("Search button clicked!");
     const query = searchInput.value.trim();
 
     if (!query) {
-      alert('Please enter a search query');
+      alert("Please enter a search query");
       return;
     }
 
     try {
       const results = await searchListings(query);
-      console.log('Search results:', results);
+      console.log("Search results:", results);
 
-      itemsGrid.innerHTML = '';
+      itemsGrid.innerHTML = "";
 
       if (results.length === 0) {
         itemsGrid.innerHTML = '<p class="text-center">No results found.</p>';
       } else {
         results.forEach((item) => {
-          const col = document.createElement('div');
-          col.className = 'col-md-4 mb-4';
+          const col = document.createElement("div");
+          col.className = "col-md-4 mb-4";
 
           col.innerHTML = `
             <div class="card h-100">
   <div class="card-img-container">
     ${
       item.media?.[0]?.url
-        ? `<img src="${item.media[0].url}" class="card-img-top" alt="${item.media?.[0]?.alt || 'No description'}" />`
-        : ''
+        ? `<img src="${item.media[0].url}" class="card-img-top" alt="${
+            item.media?.[0]?.alt || "No description"
+          }" />`
+        : ""
     }
   </div>
   <div class="card-body d-flex flex-column justify-content-between">
     <h5 class="card-title">${item.title}</h5>
     <p class="card-text">Starting bid: ${item._count?.bids || 0} points</p>
-    <a href="/src/pages/product.html?id=${item.id}" class="btn btn-dark">View Details</a>
+    <a href="./product.html?id=${item.id}" class="btn btn-dark">View Details</a>
+
   </div>
 </div>
 
@@ -174,7 +178,7 @@ export function setupSearch() {
         });
       }
     } catch (error) {
-      console.error('Error during search:', error);
+      console.error("Error during search:", error);
       itemsGrid.innerHTML =
         '<p class="text-center">Error fetching search results.</p>';
     }

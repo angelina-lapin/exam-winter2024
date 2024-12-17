@@ -160,7 +160,7 @@ async function renderUserListings() {
             <button class="btn btn-danger btn-delete" data-id="${
               listing.id
             }">Delete</button>
-            <a href="/src/pages/product.html?id=${
+            <a href="./product.html?id=${
               listing.id
             }" class="btn btn-dark">View Details</a>
             

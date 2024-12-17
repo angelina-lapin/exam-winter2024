@@ -1,28 +1,28 @@
-import { fetchProductById, addBid } from './api.js';
-import { isAuthenticated, updateNavigation } from './main.js';
-import { API_AUCTION_LISTINGS } from '../js/constants.js';
+import { fetchProductById, addBid } from "./api.js";
+import { isAuthenticated, updateNavigation } from "./main.js";
+import { API_AUCTION_LISTINGS } from "../js/constants.js";
 
 export async function renderProductDetails() {
-  const productContainer = document.getElementById('product-details');
+  const productContainer = document.getElementById("product-details");
   if (!productContainer) {
-    console.error('Product container not found');
+    console.error("Product container not found");
     return;
   }
 
   try {
-    const productId = new URLSearchParams(window.location.search).get('id');
+    const productId = new URLSearchParams(window.location.search).get("id");
     if (!productId) {
-      console.error('Product ID not found in URL');
-      productContainer.innerHTML = '<p>Product not found.</p>';
+      console.error("Product ID not found in URL");
+      productContainer.innerHTML = "<p>Product not found.</p>";
       return;
     }
 
     const product = await fetchProductById(productId);
-    console.log('Fetched product:', product);
+    console.log("Fetched product:", product);
 
     if (!product || !product.id) {
-      console.error('Invalid product data:', product);
-      productContainer.innerHTML = '<p>Product details unavailable.</p>';
+      console.error("Invalid product data:", product);
+      productContainer.innerHTML = "<p>Product details unavailable.</p>";
       return;
     }
 
@@ -33,10 +33,10 @@ export async function renderProductDetails() {
   <h1 class="text-center">${title}</h1>
   ${
     media?.[0]?.url
-      ? `<img src="${media[0].url}" alt="${media?.[0]?.alt || 'No description'}" class="img-fluid mx-auto d-block my-4" />`
-      : ''
+      ? `<img src="${media[0].url}" alt="${media?.[0]?.alt || "No description"}" class="img-fluid mx-auto d-block my-4" />`
+      : ""
   }
-  <p>${description || 'No description available.'}</p>
+  <p>${description || "No description available."}</p>
   <p><strong>Ends at:</strong> ${new Date(endsAt).toLocaleString()}</p>
   <p class="bids-display" style="font-size: 1.5rem; font-weight: bold;">
     <strong>Bids:</strong> <span class="bids-count">${_count?.bids || 0}</span>
@@ -45,16 +45,16 @@ export async function renderProductDetails() {
 
     `;
   } catch (error) {
-    console.error('Error rendering product details:', error);
+    console.error("Error rendering product details:", error);
     productContainer.innerHTML =
-      '<p>Error loading product details. Please try again later.</p>';
+      "<p>Error loading product details. Please try again later.</p>";
   }
 }
 
 export async function setupBidForm(productId) {
-  const bidForm = document.getElementById('bidForm');
+  const bidForm = document.getElementById("bidForm");
   if (!bidForm) {
-    console.error('Bid form not found');
+    console.error("Bid form not found");
     return;
   }
 
@@ -68,18 +68,18 @@ export async function setupBidForm(productId) {
     const bids = product.data?.bids || [];
     highestBid = bids.length ? Math.max(...bids.map((bid) => bid.amount)) : 0;
 
-    console.log('Highest current bid:', highestBid);
+    console.log("Highest current bid:", highestBid);
   } catch (error) {
-    console.error('Error fetching product bids:', error);
+    console.error("Error fetching product bids:", error);
   }
 
-  bidForm.addEventListener('submit', async (event) => {
+  bidForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     const bidAmount = parseFloat(
-      document.getElementById('bidAmount').value.trim()
+      document.getElementById("bidAmount").value.trim()
     );
     if (!bidAmount || isNaN(bidAmount)) {
-      alert('Please enter a valid bid amount.');
+      alert("Please enter a valid bid amount.");
       return;
     }
 
@@ -92,22 +92,22 @@ export async function setupBidForm(productId) {
 
     try {
       await addBid(productId, bidAmount);
-      alert('Bid added successfully!');
-      document.querySelector('.bids-count').textContent =
-        parseInt(document.querySelector('.bids-count').textContent) + 1;
+      alert("Bid added successfully!");
+      document.querySelector(".bids-count").textContent =
+        parseInt(document.querySelector(".bids-count").textContent) + 1;
       highestBid = bidAmount;
       await renderBids(productId);
     } catch (error) {
-      console.error('Error adding bid:', error);
-      alert('Failed to add bid. Please try again.');
+      console.error("Error adding bid:", error);
+      alert("Failed to add bid. Please try again.");
     }
   });
 }
 
 export async function renderBids(productId) {
-  const bidsContainer = document.getElementById('bids-container');
+  const bidsContainer = document.getElementById("bids-container");
   if (!bidsContainer) {
-    console.error('Bids container not found');
+    console.error("Bids container not found");
     return;
   }
 
@@ -132,24 +132,24 @@ export async function renderBids(productId) {
             (bid) =>
               `<li class="list-group-item">
                 <div><strong>Amount:</strong> ${bid.amount} points</div>
-                <div><strong>Bidder:</strong> ${bid.bidder?.name || 'Anonymous'}</div>
+                <div><strong>Bidder:</strong> ${bid.bidder?.name || "Anonymous"}</div>
                 <div><small>Placed on: ${new Date(bid.created).toLocaleString()}</small></div>
               </li>`
           )
-          .join('')}
+          .join("")}
       </ul>
     `;
   } catch (error) {
-    console.error('Error fetching bids:', error);
+    console.error("Error fetching bids:", error);
     bidsContainer.innerHTML =
       '<p class="text-center">Error loading bids. Please try again later.</p>';
   }
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener("DOMContentLoaded", async () => {
   updateNavigation();
-  const productId = new URLSearchParams(window.location.search).get('id');
-  console.log('Product ID from URL:', productId);
+  const productId = new URLSearchParams(window.location.search).get("id");
+  console.log("Product ID from URL:", productId);
   if (productId) {
     await renderProductDetails();
     await setupBidForm(productId);
