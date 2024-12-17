@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("token", userData.token);
         localStorage.setItem("user", JSON.stringify(userData));
         alert("Login successful!");
-        window.location.href = "/src/pages/profile.html";
+        window.location.href = "../index.html";
       } catch (error) {
         console.error("Login error:", error);
         alert(error.message || "Login failed");

@@ -138,7 +138,50 @@ function setupPagination(
     container.appendChild(button);
   }
 }
+
+function setupSearch() {
+  const searchButton = document.getElementById("search-button");
+  const searchInput = document.getElementById("search-input");
+  const itemsGrid = document.getElementById("items-grid");
+
+  if (!searchButton || !searchInput || !itemsGrid) {
+    console.error("Search elements not found.");
+    return;
+  }
+
+  const performSearch = async () => {
+    const query = searchInput.value.trim();
+
+    if (!query) {
+      alert("Please enter a search term.");
+      return;
+    }
+
+    try {
+      const { items } = await fetchAuctions(1, 12, query);
+      if (items.length === 0) {
+        itemsGrid.innerHTML = "<p class='text-center'>No results found.</p>";
+      } else {
+        renderItems(items, 1, 12);
+      }
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+      itemsGrid.innerHTML =
+        "<p class='text-danger text-center'>Error fetching search results.</p>";
+    }
+  };
+
+  searchButton.addEventListener("click", performSearch);
+
+  searchInput.addEventListener("keyup", (event) => {
+    if (event.key === "Enter") {
+      performSearch();
+    }
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   updateNavigation();
   setupHomePage();
+  setupSearch();
 });
