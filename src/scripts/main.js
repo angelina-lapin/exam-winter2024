@@ -54,6 +54,10 @@ async function setupHomePage() {
   console.log("Home page loaded...");
 
   const loadMoreButton = document.getElementById("load-more-button");
+  if (!loadMoreButton) {
+    console.warn("Homepage elements not found. Skipping homepage setup.");
+    return;
+  }
 
   await loadMoreItems();
 
@@ -75,6 +79,13 @@ async function loadMoreItems() {
       itemsPerPage,
       currentQuery
     );
+
+    if (!itemsGrid || !loadMoreButton) {
+      console.warn(
+        "Load more elements not found. Skipping loadMoreItems setup."
+      );
+      return;
+    }
 
     const totalPages = Math.ceil(totalCount / itemsPerPage);
     console.log(`Total pages: ${totalPages}, Current page: ${currentPage}`);
@@ -141,6 +152,11 @@ function setupSearch() {
   const searchInput = document.getElementById("search-input");
   const itemsGrid = document.getElementById("items-grid");
   const loadMoreButton = document.getElementById("load-more-button");
+
+  if (!searchButton || !searchInput || !itemsGrid || !loadMoreButton) {
+    console.warn("Search elements not found. Skipping search setup.");
+    return;
+  }
 
   searchButton.addEventListener("click", async () => {
     currentQuery = searchInput.value.trim();
