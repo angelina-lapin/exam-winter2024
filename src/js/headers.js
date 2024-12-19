@@ -1,7 +1,7 @@
-import { API_KEY } from './constants.js';
+import { API_KEY } from "./constants.js";
 
 export function headers() {
-  const user = localStorage.getItem('user');
+  const user = localStorage.getItem("user");
   let token = null;
 
   if (user) {
@@ -9,23 +9,24 @@ export function headers() {
       const parsedUser = JSON.parse(user);
       token = parsedUser.data?.accessToken || null;
     } catch (error) {
-      console.error('Failed to parse user data:', error);
+      console.error("Failed to parse user data:", error);
     }
   }
 
   const headers = new Headers();
 
   if (token) {
-    headers.append('Authorization', `Bearer ${token}`);
+    headers.set("Authorization", `Bearer ${token}`);
   } else {
-    console.warn('No authorization token found.');
+    console.warn("No authorization token found.");
   }
 
   if (API_KEY) {
-    headers.append('X-Noroff-API-Key', API_KEY);
+    headers.set("X-Noroff-API-Key", API_KEY);
   }
 
-  headers.append('Content-Type', 'application/json');
+  headers.set("Content-Type", "application/json");
 
+  console.log("Constructed Headers:", [...headers.entries()]);
   return headers;
 }

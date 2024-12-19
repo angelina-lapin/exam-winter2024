@@ -147,7 +147,6 @@ export async function renderBids(productId) {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
-  updateNavigation();
   const productId = new URLSearchParams(window.location.search).get("id");
   console.log("Product ID from URL:", productId);
   if (productId) {

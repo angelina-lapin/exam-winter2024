@@ -1,5 +1,4 @@
 import { API_AUTH_REGISTER } from "../constants.js";
-import { headers } from "../headers.js";
 
 export async function register({ name, email, password }) {
   console.log("Register function called");
@@ -41,6 +40,7 @@ export async function register({ name, email, password }) {
 
     const data = await response.json();
     console.log("Response data:", data);
+
     return data;
   } catch (error) {
     console.error("Error during registration (catch block):", error.message);

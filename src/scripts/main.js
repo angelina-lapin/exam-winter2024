@@ -12,12 +12,14 @@ export function updateNavigation() {
     return;
   }
 
+  const basePath = window.location.pathname.includes("/pages/") ? "../" : "./";
+
   nav.innerHTML = "";
 
   if (isAuthenticated()) {
     nav.innerHTML = `
       <li class="nav-item">
-        <a class="nav-link" href="./pages/profile.html">Profile</a>
+        <a class="nav-link" href="${basePath}pages/profile.html">Profile</a>
       </li>
       <li class="nav-item">
         <button class="btn btn-link nav-link" id="logoutBtn">Logout</button>
@@ -26,10 +28,10 @@ export function updateNavigation() {
   } else {
     nav.innerHTML = `
       <li class="nav-item">
-        <a class="nav-link" href="./pages/login.html">Login</a>
+        <a class="nav-link" href="${basePath}pages/login.html">Login</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="./pages/registration.html">Register</a>
+        <a class="nav-link" href="${basePath}pages/registration.html">Register</a>
       </li>
     `;
   }
@@ -39,36 +41,67 @@ export function updateNavigation() {
     logoutBtn.addEventListener("click", () => {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      window.location.href = "./index.html";
+      window.location.href = `${basePath}index.html`;
     });
   }
 }
 
+let currentPage = 1;
+const itemsPerPage = 12;
+let currentQuery = "";
+
 async function setupHomePage() {
   console.log("Home page loaded...");
 
-  const itemsGrid = document.getElementById("items-grid");
-  const paginationContainer = document.getElementById("pagination");
+  const loadMoreButton = document.getElementById("load-more-button");
 
-  if (!itemsGrid || !paginationContainer) {
-    console.error("Required containers not found.");
-    return;
-  }
+  await loadMoreItems();
+
+  loadMoreButton.addEventListener("click", async () => {
+    await loadMoreItems();
+  });
+
+  setupSearch();
+}
+
+async function loadMoreItems() {
+  const itemsGrid = document.getElementById("items-grid");
+  const loadMoreButton = document.getElementById("load-more-button");
 
   try {
-    const itemsPerPage = 12;
-    const { items, totalCount } = await fetchAuctions();
+    console.log(`Fetching page ${currentPage} with query: "${currentQuery}"`);
+    const { items, totalCount } = await fetchAuctions(
+      currentPage,
+      itemsPerPage,
+      currentQuery
+    );
 
-    renderItems(items, 1, itemsPerPage);
-    setupPagination(paginationContainer, totalCount, 1, itemsPerPage, items);
+    const totalPages = Math.ceil(totalCount / itemsPerPage);
+    console.log(`Total pages: ${totalPages}, Current page: ${currentPage}`);
+
+    if (items.length === 0 && currentPage === 1) {
+      itemsGrid.innerHTML =
+        "<p class='text-center'>No results found for your search.</p>";
+      loadMoreButton.disabled = true;
+      return;
+    }
+
+    renderItems(items);
+
+    currentPage++;
+    console.log(`Items rendered: ${itemsGrid.children.length}`);
+
+    if (currentPage > totalPages) {
+      loadMoreButton.disabled = true;
+      loadMoreButton.textContent = "No more items to load";
+    }
   } catch (error) {
-    console.error("Error fetching items:", error);
-    itemsGrid.innerHTML =
-      "<p class='text-danger text-center'>Failed to load items.</p>";
+    console.error("Error loading more items:", error);
+    loadMoreButton.textContent = "Error loading items";
   }
 }
 
-export function renderItems(listings, currentPage, itemsPerPage) {
+function renderItems(listings) {
   const itemsGrid = document.getElementById("items-grid");
 
   if (!itemsGrid) {
@@ -76,32 +109,25 @@ export function renderItems(listings, currentPage, itemsPerPage) {
     return;
   }
 
-  itemsGrid.innerHTML = "";
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const paginatedListings = listings.slice(startIndex, endIndex);
-
-  if (paginatedListings.length === 0) {
-    itemsGrid.innerHTML =
-      "<p class='text-center'>No items available to display.</p>";
+  if (!listings || listings.length === 0) {
+    itemsGrid.innerHTML = "<p class='text-center'>No items available.</p>";
     return;
   }
 
-  paginatedListings.forEach((item) => {
+  listings.forEach((item) => {
     const col = document.createElement("div");
     col.className = "col-md-4 mb-4";
 
     const imageHTML = item.media?.[0]?.url
       ? `<img src="${item.media[0].url}" class="card-img-top" alt="${item.title}" />`
-      : "";
+      : `<div class="placeholder-img">No image available</div>`;
 
     col.innerHTML = `
       <div class="card h-100">
         ${imageHTML}
         <div class="card-body">
           <h5 class="card-title">${item.title}</h5>
-          <p class="card-text">Starting bid: ${item._count?.bids || 0} points</p>
+           <p class="card-text">Starting bid: ${item._count?.bids || 0} points</p>
           <a href="./pages/product.html?id=${item.id}" class="btn btn-dark">View Details</a>
         </div>
       </div>
@@ -110,72 +136,27 @@ export function renderItems(listings, currentPage, itemsPerPage) {
   });
 }
 
-function setupPagination(
-  container,
-  totalItems,
-  currentPage,
-  itemsPerPage,
-  items
-) {
-  container.innerHTML = "";
-
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-  for (let i = 1; i <= totalPages; i++) {
-    const button = document.createElement("button");
-    button.className = "btn btn-outline-dark mx-1";
-    button.textContent = i;
-
-    if (i === currentPage) {
-      button.classList.add("active");
-    }
-
-    button.addEventListener("click", () => {
-      renderItems(items, i, itemsPerPage);
-      setupPagination(container, totalItems, i, itemsPerPage, items);
-    });
-
-    container.appendChild(button);
-  }
-}
-
 function setupSearch() {
   const searchButton = document.getElementById("search-button");
   const searchInput = document.getElementById("search-input");
   const itemsGrid = document.getElementById("items-grid");
+  const loadMoreButton = document.getElementById("load-more-button");
 
-  if (!searchButton || !searchInput || !itemsGrid) {
-    console.error("Search elements not found.");
-    return;
-  }
+  searchButton.addEventListener("click", async () => {
+    currentQuery = searchInput.value.trim();
+    currentPage = 1;
+    itemsGrid.innerHTML = "";
+    loadMoreButton.disabled = false;
+    await loadMoreItems();
+  });
 
-  const performSearch = async () => {
-    const query = searchInput.value.trim();
-
-    if (!query) {
-      alert("Please enter a search term.");
-      return;
-    }
-
-    try {
-      const { items } = await fetchAuctions(1, 12, query);
-      if (items.length === 0) {
-        itemsGrid.innerHTML = "<p class='text-center'>No results found.</p>";
-      } else {
-        renderItems(items, 1, 12);
-      }
-    } catch (error) {
-      console.error("Error fetching search results:", error);
-      itemsGrid.innerHTML =
-        "<p class='text-danger text-center'>Error fetching search results.</p>";
-    }
-  };
-
-  searchButton.addEventListener("click", performSearch);
-
-  searchInput.addEventListener("keyup", (event) => {
+  searchInput.addEventListener("keyup", async (event) => {
     if (event.key === "Enter") {
-      performSearch();
+      currentQuery = searchInput.value.trim();
+      currentPage = 1;
+      itemsGrid.innerHTML = "";
+      loadMoreButton.disabled = false;
+      await loadMoreItems();
     }
   });
 }

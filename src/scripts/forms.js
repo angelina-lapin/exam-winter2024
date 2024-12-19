@@ -18,27 +18,36 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const registerForm = document.getElementById("registerForm");
   if (registerForm) {
-    console.log("Register form found");
-    registerForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      console.log("Register form submitted");
+    registerForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
 
       const name = document.getElementById("name").value.trim();
       const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
+      const password = document.getElementById("password").value;
 
       try {
-        const userData = await register({ name, email, password });
-        console.log("Registration successful:", userData);
+        await register({ name, email, password });
+
+        console.log("User registered successfully!");
 
         localStorage.setItem(
           "successMessage",
-          "Registration successful! Please log in using your new account."
+          "Registration successful! You can now log in."
         );
-        window.location.href = "./login.html";
+
+        window.location.href = "../pages/login.html";
       } catch (error) {
-        console.error("Registration error:", error);
-        alert(error.message || "Registration failed");
+        console.error("Registration failed:", error.message);
+
+        if (alertContainer) {
+          const alert = document.createElement("div");
+          alert.className = "alert alert-danger";
+          alert.role = "alert";
+          alert.textContent = `Registration failed: ${error.message}`;
+
+          alertContainer.innerHTML = "";
+          alertContainer.appendChild(alert);
+        }
       }
     });
   }
@@ -61,7 +70,16 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "../index.html";
       } catch (error) {
         console.error("Login error:", error);
-        alert(error.message || "Login failed");
+
+        if (alertContainer) {
+          const alert = document.createElement("div");
+          alert.className = "alert alert-danger";
+          alert.role = "alert";
+          alert.textContent = `Login failed: ${error.message}`;
+
+          alertContainer.innerHTML = "";
+          alertContainer.appendChild(alert);
+        }
       }
     });
   }

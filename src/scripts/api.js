@@ -1,24 +1,32 @@
 import { API_AUCTION_LISTINGS, API_BASE } from "../js/constants.js";
 import { headers } from "../js/headers.js";
 
-export async function fetchAuctions(page = 1, limit = 50, query = "") {
+export async function fetchAuctions(page = 1, limit = 12, query = "") {
   try {
     const baseUrl = query
       ? `${API_AUCTION_LISTINGS}/search?q=${encodeURIComponent(query)}`
       : `${API_AUCTION_LISTINGS}?_sort=createdAt&_order=desc&_page=${page}&_limit=${limit}`;
 
-    const response = await fetch(baseUrl);
+    console.log(`API Request URL: ${baseUrl}`);
+    console.log("Request Headers:", headers());
+
+    const response = await fetch(baseUrl, { headers: headers() });
 
     if (!response.ok) {
-      throw new Error("Failed to fetch listings");
+      throw new Error(
+        `Failed to fetch listings: ${response.status} ${response.statusText}`
+      );
     }
 
-    const data = await response.json();
-    const items = Array.isArray(data.data) ? data.data : [];
-    const totalCount = query
-      ? items.length
-      : parseInt(response.headers.get("X-Total-Count"), 10) || 0;
+    console.log("Response Headers:", response.headers);
 
+    const data = await response.json();
+    console.log("Response Data:", data);
+
+    const items = Array.isArray(data.data) ? data.data : [];
+    const totalCount = data.meta?.totalCount || items.length;
+
+    console.log(`Items fetched: ${items.length}, Total count: ${totalCount}`);
     return { items, totalCount };
   } catch (error) {
     console.error("Error during fetchAuctions:", error);
