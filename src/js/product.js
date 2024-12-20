@@ -1,6 +1,6 @@
-import { fetchProductById, addBid } from "./api.js";
+import { fetchProductById, addBid } from "./api/api.js";
 import { isAuthenticated, updateNavigation } from "./main.js";
-import { API_AUCTION_LISTINGS } from "../js/constants.js";
+import { API_AUCTION_LISTINGS } from "./modules/constants.js";
 
 export async function renderProductDetails() {
   const productContainer = document.getElementById("product-details");

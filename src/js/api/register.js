@@ -1,4 +1,4 @@
-import { API_AUTH_REGISTER } from "../constants.js";
+import { API_AUTH_REGISTER } from "../modules/constants.js";
 
 export async function register({ name, email, password }) {
   console.log("Register function called");

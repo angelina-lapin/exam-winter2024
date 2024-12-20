@@ -4,7 +4,7 @@ import {
   fetchUserListings,
   createListing,
   deleteListing,
-} from "./api.js";
+} from "./api/api.js";
 import { updateNavigation } from "./main.js";
 
 async function renderProfile() {

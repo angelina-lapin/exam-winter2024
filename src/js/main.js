@@ -1,4 +1,4 @@
-import { fetchAuctions } from "./api.js";
+import { fetchAuctions } from "./api/api.js";
 
 export function isAuthenticated() {
   const token = localStorage.getItem("token");
@@ -6,35 +6,51 @@ export function isAuthenticated() {
 }
 
 export function updateNavigation() {
-  const nav = document.querySelector(".navbar-nav");
-  if (!nav) {
-    console.error("Navigation container not found.");
+  const navbarContainer = document.querySelector(".navbar-collapse");
+
+  if (!navbarContainer) {
+    console.error("Navbar container not found. Check your HTML structure.");
     return;
   }
 
   const basePath = window.location.pathname.includes("/pages/") ? "../" : "./";
 
-  nav.innerHTML = "";
-
-  if (isAuthenticated()) {
-    nav.innerHTML = `
-      <li class="nav-item">
-        <a class="nav-link" href="${basePath}pages/profile.html">Profile</a>
-      </li>
-      <li class="nav-item">
-        <button class="btn btn-link nav-link" id="logoutBtn">Logout</button>
-      </li>
-    `;
-  } else {
-    nav.innerHTML = `
-      <li class="nav-item">
-        <a class="nav-link" href="${basePath}pages/login.html">Login</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="${basePath}pages/registration.html">Register</a>
-      </li>
-    `;
-  }
+  navbarContainer.innerHTML = `
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        ${
+          isAuthenticated()
+            ? `
+          <li class="nav-item">
+            <a class="nav-link" href="${basePath}pages/profile.html">Profile</a>
+          </li>
+          <li class="nav-item">
+            <button class="btn btn-link nav-link" id="logoutBtn">Logout</button>
+          </li>
+        `
+            : `
+          <li class="nav-item">
+            <a class="nav-link" href="${basePath}pages/login.html">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="${basePath}pages/registration.html">Register</a>
+          </li>
+        `
+        }
+      </ul>
+    </div>
+  `;
 
   const logoutBtn = document.getElementById("logoutBtn");
   if (logoutBtn) {

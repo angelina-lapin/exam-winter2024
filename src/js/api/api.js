@@ -1,5 +1,5 @@
-import { API_AUCTION_LISTINGS, API_BASE } from "../js/constants.js";
-import { headers } from "../js/headers.js";
+import { API_AUCTION_LISTINGS, API_BASE } from "../modules/constants.js";
+import { headers } from "../modules/headers.js";
 
 export async function fetchAuctions(page = 1, limit = 12, query = "") {
   try {

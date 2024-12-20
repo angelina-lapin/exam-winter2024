@@ -1,5 +1,5 @@
-import { register } from "../js/api/register.js";
-import { login } from "../js/api/login.js";
+import { register } from "../api/register.js";
+import { login } from "../api/login.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const alertContainer = document.getElementById("alert-container");
