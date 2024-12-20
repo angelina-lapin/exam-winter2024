@@ -121,7 +121,6 @@ src/
 │   ├── main.js
 │   └── profile.js
 ├── pages/
-│   ├── home.html
 │   ├── login.html
 │   ├── product.html
 │   ├── profile.html
