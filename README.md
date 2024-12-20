@@ -36,7 +36,7 @@ This is a web application for managing and participating in auctions. Users can 
 - **Backend API:**
   - REST API integration using Fetch API.
 - **Development Server:**
-  - http-server for serving static files locally.
+  - Live Server for serving the application locally.
 
 ## Installation
 
@@ -45,6 +45,7 @@ This is a web application for managing and participating in auctions. Users can 
 - Node.js (v14 or higher)
 - npm (Node Package Manager)
 - A web browser
+- Live Server extension for Visual Studio Code
 
 ### Steps
 
@@ -55,30 +56,24 @@ This is a web application for managing and participating in auctions. Users can 
    cd auction-website
    ```
 
-2. Install dependencies:
+2. Open the folder in Visual Studio Code:
 
    ```bash
-   npm install
+   code .
    ```
 
-3. Start the development server:
+3. Start the Live Server:
 
-   ```bash
-   npm install -g http-server
-
-   ```
+- Right-click on index.html in the Explorer panel.
+- Select Open with Live Server.
+- The application will be served on http://127.0.0.1:5500 by default.
 
 ## Usage
 
 ### Running the Application
 
-1. **Start the Server**:  
-   After installing dependencies, you can serve the application locally using http-server:
-
-   ```bash
-   http-server ./ -p 8080
-
-   ```
+1. **Start Live Server:**:  
+   Ensure the project is open in Visual Studio Code, and start Live Server as mentioned in the installation steps.
 
 2. **Explore the Features**:
 
@@ -115,21 +110,22 @@ src/
 ├── js/
 │   ├── api/
 │   │   ├── login.js
+│   │   ├── login.js
 │   │   └── register.js
-│   ├── constants.js
-│   └── headers.js
+│   ├── modules/
+│   │   ├── constants.js
+│   │   └── headers.js
+│   ├── forms/
+│   │   ├── forms.js
+│   ├── product.js
+│   ├── main.js
+│   └── profile.js
 ├── pages/
 │   ├── home.html
 │   ├── login.html
 │   ├── product.html
 │   ├── profile.html
 │   └── registration.html
-├── scripts/
-│   ├── api.js
-│   ├── forms.js
-│   ├── home.js
-│   ├── main.js
-│   └── profile.js
 ├── index.html
 package-lock.json
 package.json
@@ -171,3 +167,4 @@ For a complete reference, see the [API Documentation](https://docs.noroff.dev/do
 ## Contributing
 
 I welcome contributions from students and educators. If you have any additional study materials or practice exams, please submit a pull request.
+
