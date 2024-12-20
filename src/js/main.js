@@ -67,8 +67,6 @@ const itemsPerPage = 12;
 let currentQuery = "";
 
 async function setupHomePage() {
-  console.log("Home page loaded...");
-
   const loadMoreButton = document.getElementById("load-more-button");
   if (!loadMoreButton) {
     console.warn("Homepage elements not found. Skipping homepage setup.");
@@ -89,7 +87,6 @@ async function loadMoreItems() {
   const loadMoreButton = document.getElementById("load-more-button");
 
   try {
-    console.log(`Fetching page ${currentPage} with query: "${currentQuery}"`);
     const { items, totalCount } = await fetchAuctions(
       currentPage,
       itemsPerPage,
@@ -104,7 +101,6 @@ async function loadMoreItems() {
     }
 
     const totalPages = Math.ceil(totalCount / itemsPerPage);
-    console.log(`Total pages: ${totalPages}, Current page: ${currentPage}`);
 
     if (items.length === 0 && currentPage === 1) {
       itemsGrid.innerHTML =
@@ -116,7 +112,6 @@ async function loadMoreItems() {
     renderItems(items);
 
     currentPage++;
-    console.log(`Items rendered: ${itemsGrid.children.length}`);
 
     if (currentPage > totalPages) {
       loadMoreButton.disabled = true;

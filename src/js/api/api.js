@@ -7,9 +7,6 @@ export async function fetchAuctions(page = 1, limit = 12, query = "") {
       ? `${API_AUCTION_LISTINGS}/search?q=${encodeURIComponent(query)}`
       : `${API_AUCTION_LISTINGS}?_sort=createdAt&_order=desc&_page=${page}&_limit=${limit}`;
 
-    console.log(`API Request URL: ${baseUrl}`);
-    console.log("Request Headers:", headers());
-
     const response = await fetch(baseUrl, { headers: headers() });
 
     if (!response.ok) {
@@ -18,15 +15,11 @@ export async function fetchAuctions(page = 1, limit = 12, query = "") {
       );
     }
 
-    console.log("Response Headers:", response.headers);
-
     const data = await response.json();
-    console.log("Response Data:", data);
 
     const items = Array.isArray(data.data) ? data.data : [];
     const totalCount = data.meta?.totalCount || items.length;
 
-    console.log(`Items fetched: ${items.length}, Total count: ${totalCount}`);
     return { items, totalCount };
   } catch (error) {
     console.error("Error during fetchAuctions:", error);

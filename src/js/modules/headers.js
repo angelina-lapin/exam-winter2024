@@ -27,6 +27,5 @@ export function headers() {
 
   headers.set("Content-Type", "application/json");
 
-  console.log("Constructed Headers:", [...headers.entries()]);
   return headers;
 }
