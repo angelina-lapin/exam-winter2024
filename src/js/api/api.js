@@ -1,5 +1,10 @@
 import { API_AUCTION_LISTINGS, API_BASE } from "../modules/constants.js";
 import { headers } from "../modules/headers.js";
+import {
+  showLoadingIndicator,
+  hideLoadingIndicator,
+  showToast,
+} from "../utils/ui.js";
 
 export async function fetchAuctions(page = 1, limit = 12, query = "") {
   try {
@@ -42,18 +47,20 @@ export async function fetchProductById(id) {
   }
 }
 
-export async function searchListings(query) {
+export async function fetchListings() {
+  showLoadingIndicator();
   try {
-    const url = `${API_AUCTION_LISTINGS}/search?q=${encodeURIComponent(query)}`;
-    const response = await fetch(url);
+    const response = await fetch(`${API_BASE}/listings`);
     if (!response.ok) {
-      throw new Error("Failed to fetch search results");
+      throw new Error("Failed to fetch listings");
     }
-    const data = await response.json();
-    return data.data;
+    return await response.json();
   } catch (error) {
-    console.error("Error during searchListings:", error);
+    showToast(error.message);
+    console.error(error);
     return [];
+  } finally {
+    hideLoadingIndicator();
   }
 }
 

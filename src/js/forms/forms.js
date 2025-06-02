@@ -1,18 +1,13 @@
 import { register } from "../api/register.js";
 import { login } from "../api/login.js";
+import { showToast } from "../utils/ui.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const alertContainer = document.getElementById("alert-container");
   const successMessage = localStorage.getItem("successMessage");
 
   if (successMessage && alertContainer) {
-    const alert = document.createElement("div");
-    alert.className = "alert alert-success";
-    alert.role = "alert";
-    alert.textContent = successMessage;
-
-    alertContainer.appendChild(alert);
-
+    showToast(successMessage);
     localStorage.removeItem("successMessage");
   }
 
@@ -25,6 +20,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value;
 
+      if (!name || !email || !password) {
+        showToast("Please fill in all fields.");
+        return;
+      }
+
       try {
         await register({ name, email, password });
 
@@ -35,17 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         window.location.href = "../pages/login.html";
       } catch (error) {
-        console.error("Registration failed:", error.message);
-
-        if (alertContainer) {
-          const alert = document.createElement("div");
-          alert.className = "alert alert-danger";
-          alert.role = "alert";
-          alert.textContent = `Registration failed: ${error.message}`;
-
-          alertContainer.innerHTML = "";
-          alertContainer.appendChild(alert);
-        }
+        showToast(`Registration failed: ${error.message}`);
       }
     });
   }
@@ -58,25 +48,23 @@ document.addEventListener("DOMContentLoaded", () => {
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
 
+      if (!email || !password) {
+        showToast("Please fill in both email and password.");
+        return;
+      }
+
       try {
         const userData = await login({ email, password });
 
         localStorage.setItem("token", userData.token);
         localStorage.setItem("user", JSON.stringify(userData));
-        alert("Login successful!");
-        window.location.href = "../index.html";
+
+        showToast("Login successful!");
+        setTimeout(() => {
+          window.location.href = "../index.html";
+        }, 1000);
       } catch (error) {
-        console.error("Login error:", error);
-
-        if (alertContainer) {
-          const alert = document.createElement("div");
-          alert.className = "alert alert-danger";
-          alert.role = "alert";
-          alert.textContent = `Login failed: ${error.message}`;
-
-          alertContainer.innerHTML = "";
-          alertContainer.appendChild(alert);
-        }
+        showToast(`Login failed: ${error.message}`);
       }
     });
   }
